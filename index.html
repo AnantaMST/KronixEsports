@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>LANPARTY EDITION — Season 01 | Blood Strike</title>
-<meta name="description" content="LANPARTY EDITION Season 01. Torneo de Blood Strike. 500 USD garantizados. Compite. Sobrevive. Conquista.">
+<title>KRONIXE SPORTS — Season 01 | Blood Strike</title>
+<meta name="description" content="KRONIXE SPORTS Season 01. Torneo de Blood Strike. 500 USD garantizados. Compite. Sobrevive. Conquista.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 
 <style>
 /* ============================================================
-   LANPARTY EDITION — DESIGN TOKENS
+   KRONIXE SPORTS — DESIGN TOKENS
    Paleta: fondo casi-negro, panel carbón, acento verde neón,
    blanco y gris ceniza. Tipografía: Bebas Neue (display, estilo
    overlay de transmisión), Inter (UI/cuerpo), JetBrains Mono
@@ -24,9 +24,9 @@
   --panel:         #111111;
   --panel-raised:  #161616;
   --line:          #232323;
-  --primary:       #8DFF00;
-  --primary-dim:   #5FB300;
-  --primary-glow:  rgba(141,255,0,.35);
+  --primary:       #44D379;
+  --primary-dim:   #2C894F;
+  --primary-glow:  rgba(68,211,121,.35);
   --text:          #FFFFFF;
   --gray:          #888888;
   --gray-dim:      #555555;
@@ -398,15 +398,18 @@ ul{list-style:none}
 .conv-text b{color:var(--round-accent, var(--primary))}
 
 /* grupos (Fase de Grupos) */
-.group-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media (min-width:640px){.group-grid{grid-template-columns:repeat(3,1fr)}}
-@media (min-width:1024px){.group-grid{grid-template-columns:repeat(4,1fr)}}
-.group-box{background:var(--bg);border:1px solid var(--line);border-top:3px solid var(--round-accent, var(--primary));padding:14px}
-.group-box-title{font-family:var(--f-display);font-size:18px;color:var(--round-accent, var(--primary));text-transform:uppercase;letter-spacing:.01em}
-.group-box-sub{font-family:var(--f-mono);font-size:9px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
-.group-team{display:flex;align-items:center;gap:7px;font-size:12px;padding:6px 0;border-top:1px solid var(--line)}
-.group-team:first-of-type{border-top:none}
+.group-grid{display:flex;flex-direction:column;gap:14px}
+.group-box{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--round-accent, var(--primary));padding:16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.group-box-head{display:flex;align-items:baseline;gap:10px;flex-shrink:0;min-width:110px}
+.group-box-title{font-family:var(--f-display);font-size:20px;color:var(--round-accent, var(--primary));text-transform:uppercase;letter-spacing:.01em}
+.group-box-sub{font-family:var(--f-mono);font-size:9px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.08em}
+.group-team-row{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.group-team{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:7px 12px;border:1px solid var(--line);background:var(--panel-raised);white-space:nowrap}
 .group-team svg{width:12px;height:12px;color:var(--gray-dim);flex-shrink:0}
+@media (max-width:480px){
+  .group-box{flex-direction:column;align-items:flex-start}
+  .group-box-head{min-width:0}
+}
 
 @keyframes treePulse{
   0%,100%{box-shadow:0 0 0 0 var(--primary-glow)}
@@ -422,38 +425,63 @@ ul{list-style:none}
 .tree-champion span{font-family:var(--f-mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase}
 
 /* ============================================================
-   LLAVE DE ELIMINACIÓN — bracket horizontal profesional
+   LLAVE DE ELIMINACIÓN — bracket vertical profesional
+   (rondas apiladas de arriba hacia abajo)
    Color de acento propio de este componente: #C6FF00
    ============================================================ */
 .h-bracket-scroll{
   --bracket-accent:#C6FF00;
-  overflow-x:auto;
-  overflow-y:hidden;
+  overflow-x:hidden;
   padding:10px 4px 26px;
-  scroll-snap-type:x proximity;
-  -webkit-overflow-scrolling:touch;
 }
-@media (max-width:900px){.h-bracket-scroll{scroll-snap-type:x mandatory}}
 .h-bracket{
   position:relative;
   display:flex;
-  gap:64px;
+  flex-direction:column;
   align-items:center;
-  min-width:max-content;
-  padding:20px 24px;
+  gap:56px;
+  padding:20px 10px;
 }
 .h-bracket-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .h-line{fill:none;stroke:var(--line);stroke-width:2;transition:stroke .3s ease, stroke-width .3s ease}
-.h-line.decided{stroke:var(--bracket-accent);stroke-width:2.5}
-.h-line.flow{stroke-dasharray:7 6;animation:hLineFlow .7s linear infinite}
+.h-line.decided{stroke-width:2}
+.h-line.flow{
+  stroke:var(--bracket-accent);
+  stroke-width:3;
+  stroke-dasharray:7 6;
+  animation:hLineFlow .7s linear infinite;
+  filter:drop-shadow(0 0 5px rgba(198,255,0,.85));
+}
 @keyframes hLineFlow{to{stroke-dashoffset:-26}}
 
 .h-bracket-round{
-  display:flex;flex-direction:column;justify-content:space-around;
-  gap:30px;min-width:250px;scroll-snap-align:start;
+  display:flex;flex-direction:row;flex-wrap:nowrap;
+  gap:22px;width:100%;
+  overflow-x:auto;
+  padding:6px 4px 16px;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  justify-content:flex-start;
 }
-.h-bracket-round.final{justify-content:center;min-width:290px}
+.h-bracket-round.final{justify-content:center}
+.h-bracket-round.semis{justify-content:center}
+.h-bracket-round.cuartos{justify-content:center}
+.h-bracket-round.cuartos,
+.h-bracket-round.semis,
+.h-bracket-round.final{
+  overflow-x:visible;
+  flex-wrap:nowrap;
+}
+.h-bracket-round.cuartos .match-card-h,
+.h-bracket-round.semis .match-card-h,
+.h-bracket-round.final .match-card-h{
+  flex:0 1 260px;
+  width:auto;
+  min-width:0;
+}
+.h-round-block{width:100%}
 .h-round-label{
+  width:100%;
   text-align:center;margin-bottom:16px;
   font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--bracket-accent);
@@ -461,6 +489,9 @@ ul{list-style:none}
 
 .match-card-h{
   position:relative;
+  width:260px;
+  flex-shrink:0;
+  scroll-snap-align:start;
   background:#0a0a0a;
   border:1px solid var(--line);
   padding:14px 16px;
@@ -472,11 +503,18 @@ ul{list-style:none}
   border-color:var(--bracket-accent);
   box-shadow:0 14px 30px -14px rgba(198,255,0,.35);
 }
+@media (max-width:380px){
+  .h-bracket-round.octavos .match-card-h{width:100%;max-width:280px}
+  .h-bracket-round.cuartos .match-card-h,
+  .h-bracket-round.semis .match-card-h,
+  .h-bracket-round.final .match-card-h{padding:10px 10px}
+  .h-bracket-round.final .match-card-h{transform:scale(1)}
+}
 .match-card-h.decided{
   border-color:var(--bracket-accent);
   box-shadow:0 0 22px -6px rgba(198,255,0,.4);
 }
-.h-bracket-round.final .match-card-h{padding:24px 26px;transform:scale(1.08)}
+.h-bracket-round.final .match-card-h{flex-basis:300px;padding:24px 26px;transform:scale(1.08)}
 .h-bracket-round.final .match-card-h:hover{transform:scale(1.08) translateY(-3px)}
 
 .mh-team{display:flex;align-items:center;gap:10px;padding:7px 0}
@@ -1029,12 +1067,12 @@ window.SITE_DATA = {
   // hoja: hero  [campo, valor]
   hero: {
     game: "BLOOD STRIKE",
-    title_line1: "LANPARTY",
-    title_line2: "EDITION",
+    title_line1: "KRONIXE",
+    title_line2: "SPORTS",
     season: "SEASON 01",
     tagline: "Compite. Sobrevive. Conquista.",
     eventDates: "19 y 20 de septiembre, 2026",
-    bgImage: "https://i.imgur.com/cRNucTc.png", // editable: fondo 1200x600 detrás del título "LANPARTY EDITION"
+    bgImage: "https://i.imgur.com/cRNucTc.png", // editable: fondo 1200x600 detrás del título "KRONIXE SPORTS"
     bannerImage: "", // editable: URL de imagen 1200x600 (si se deja vacío, se usa el arte generado por CSS)
     targetDate: "2026-09-19T09:00:00-06:00" // editable: fecha/hora de inicio del torneo (día 1)
   },
@@ -1123,14 +1161,14 @@ window.SITE_DATA = {
       icon: "trophy",
       title: "Gran Final",
       teams: "2 equipos",
-      detail: "Partida única. El ganador se corona Campeón de LANPARTY EDITION.",
+      detail: "Partida única. El ganador se corona Campeón de KRONIXE SPORTS.",
       advance: "1 campeón",
       bracket: [
         {
           title: "4. Gran Final",
           subtitle: "Partida única · Eliminación directa",
           convergeNum: "1 CAMPEÓN",
-          convergeLabel: "se corona en LANPARTY EDITION",
+          convergeLabel: "se corona en KRONIXE SPORTS",
           matches: [
             { id: 1, teams: ["Finalista 1", "Finalista 2"], result: "" }
           ]
@@ -1203,7 +1241,7 @@ window.SITE_DATA = {
   ],
   // hoja: footer_links  [columna, texto, href]
   footerLinks: {
-    "Torneo": [["Reglamento","#reglamento"],["Cronograma","#cronograma"],["Equipos","#"],["Bracket","#"]],
+    "Torneo": [["Reglamento","#reglamento"],["Cronograma","#cronograma"],["Equipos","#"],["Bracket","#bracket"]],
     "Cuenta": [["Registro","registro.html"],["Dashboard Capitán","#"],["Preguntas frecuentes","#faq"]],
     "Comunidad": [["Discord Oficial","#"],["Twitch","#"],["Instagram","#"]]
   },
@@ -1232,10 +1270,11 @@ window.SITE_DATA = {
 <!-- NAV -->
 <header class="nav">
   <div class="container nav-inner">
-    <a href="#" class="logo"><span>LP</span>EDITION<small>&nbsp;S01</small></a>
+    <a href="#" class="logo"><span>KX</span>SPORTS<small>&nbsp;S01</small></a>
     <nav class="nav-links">
       <a href="#torneo">Torneo</a>
       <a href="#cronograma">Cronograma</a>
+      <a href="#bracket">Bracket</a>
       <a href="#reglamento">Reglamento</a>
       <a href="registro.html" target="_blank" rel="noopener">Registro</a>
       <a href="#giveaway">Giveaway</a>
@@ -1249,6 +1288,7 @@ window.SITE_DATA = {
   <div class="nav-drawer" id="navDrawer">
     <a href="#torneo">Torneo</a>
     <a href="#cronograma">Cronograma</a>
+    <a href="#bracket">Bracket</a>
     <a href="#reglamento">Reglamento</a>
     <a href="registro.html" target="_blank" rel="noopener">Registro</a>
     <a href="#giveaway">Giveaway</a>
@@ -1324,7 +1364,7 @@ window.SITE_DATA = {
     <div class="section-head reveal" style="text-align:center;max-width:560px;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center">Llave de eliminación</div>
       <h2 class="section-title">Bracket del<br>torneo</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">Desliza para ver todas las rondas. Toca cualquier partida para ver el detalle.</p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">De Octavos a la Gran Final, ronda por ronda. Toca cualquier partida para ver el detalle.</p>
     </div>
     <div class="h-bracket-scroll reveal">
       <div class="h-bracket" id="hBracket">
@@ -1445,7 +1485,7 @@ window.SITE_DATA = {
       <div class="ticket-num" id="giveawayTicketNum"></div>
       <img id="giveawayQr" width="160" height="160" alt="Código QR del ticket">
       <div class="btn-row" style="justify-content:center">
-        <a href="#" id="giveawayDownload" download="lanparty-ticket.png" class="btn btn-primary"><i data-lucide="download" style="width:16px;height:16px"></i> Descargar Ticket</a>
+        <a href="#" id="giveawayDownload" download="kronixe-ticket.png" class="btn btn-primary"><i data-lucide="download" style="width:16px;height:16px"></i> Descargar Ticket</a>
       </div>
     </div>
 
@@ -1474,7 +1514,7 @@ window.SITE_DATA = {
     </div>
     <div class="foot-cols" id="footCols"></div>
     <div class="foot-bottom">
-      <span>© 2026 LANPARTY EDITION. Todos los derechos reservados.</span>
+      <span>© 2026 KRONIXE SPORTS. Todos los derechos reservados.</span>
       <div class="foot-social">
         <a href="#" aria-label="Discord"><i data-lucide="message-circle" style="width:16px;height:16px"></i></a>
         <a href="#" aria-label="Instagram"><i data-lucide="instagram" style="width:16px;height:16px"></i></a>
@@ -1515,7 +1555,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroTagline').textContent = D.hero.tagline;
   document.getElementById('heroDates').innerHTML = `<i data-lucide="calendar" style="width:12px;height:12px;vertical-align:-2px"></i> <b>${D.hero.eventDates}</b>`;
   if (D.hero.bannerImage){
-    document.getElementById('heroBanner').innerHTML = `<img src="${D.hero.bannerImage}" alt="LANPARTY EDITION">`;
+    document.getElementById('heroBanner').innerHTML = `<img src="${D.hero.bannerImage}" alt="KRONIXE SPORTS">`;
   }
   if (D.hero.bgImage){
     const heroBg = document.querySelector('.hero-bg');
@@ -1670,9 +1710,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="group-grid">
         ${order.map(g => `
           <div class="group-box">
-            <div class="group-box-title">${g}</div>
-            <div class="group-box-sub">${groups[g].length} equipos</div>
-            ${groups[g].map(n => `<div class="group-team"><i data-lucide="users"></i>${n}</div>`).join('')}
+            <div class="group-box-head">
+              <div class="group-box-title">${g}</div>
+              <div class="group-box-sub">${groups[g].length} equipos</div>
+            </div>
+            <div class="group-team-row">
+              ${groups[g].map(n => `<div class="group-team"><i data-lucide="users"></i>${n}</div>`).join('')}
+            </div>
           </div>
         `).join('')}
       </div>
@@ -1786,10 +1830,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<div class="mh-team ${isWinner ? 'winner' : ''}"><span class="mh-logo">${logo}</span><span class="mh-name">${team.name}</span></div>`;
     }
 
+    const roundScrollEls = [];
+
     D.eliminationBracket.forEach(round => {
+      const block = document.createElement('div');
+      block.className = 'h-round-block';
+      block.innerHTML = `<div class="h-round-label">${round.label}</div>`;
+
       const col = document.createElement('div');
-      col.className = 'h-bracket-round' + (round.key === 'final' ? ' final' : '');
-      col.innerHTML = `<div class="h-round-label">${round.label}</div>`;
+      col.className = 'h-bracket-round ' + round.key;
 
       round.matches.forEach(m => {
         const card = document.createElement('div');
@@ -1813,10 +1862,18 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="mh-status ${m.status}">${STATUS_LABEL[m.status] || m.status}</div>
           </div>`;
         card.addEventListener('click', () => openMatchModal(m, round.label));
+        card.addEventListener('mouseenter', () => {
+          svg.querySelectorAll(`[data-source="${m.id}"], [data-target="${m.id}"]`).forEach(p => p.classList.add('flow'));
+        });
+        card.addEventListener('mouseleave', () => {
+          svg.querySelectorAll(`[data-source="${m.id}"], [data-target="${m.id}"]`).forEach(p => p.classList.remove('flow'));
+        });
         col.appendChild(card);
       });
 
-      hBracket.appendChild(col);
+      block.appendChild(col);
+      hBracket.appendChild(block);
+      roundScrollEls.push(col);
     });
     hBracket.appendChild(svg); // el svg queda al final, superpuesto sobre las columnas
 
@@ -1832,13 +1889,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!source || !target) return;
         const sr = source.getBoundingClientRect();
         const tr = target.getBoundingClientRect();
-        const x1 = sr.right - rect.left;
-        const y1 = sr.top + sr.height / 2 - rect.top;
-        const x2 = tr.left - rect.left;
-        const y2 = tr.top + tr.height / 2 - rect.top;
-        const midX = (x1 + x2) / 2;
+        const x1 = sr.left + sr.width / 2 - rect.left;
+        const y1 = sr.bottom - rect.top;
+        const x2 = tr.left + tr.width / 2 - rect.left;
+        const y2 = tr.top - rect.top;
+        const midY = (y1 + y2) / 2;
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${x1} ${y1} C ${midX} ${y1}, ${midX} ${y2}, ${x2} ${y2}`);
+        path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`);
         path.setAttribute('class', 'h-line' + (m.status === 'finished' ? ' decided' : ''));
         path.dataset.source = m.id;
         path.dataset.target = m.feedsInto;
@@ -1846,20 +1903,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }));
     }
 
-    // hover: anima las líneas conectadas a la partida (entrada y salida)
-    hBracket.addEventListener('mouseover', e => {
-      const card = e.target.closest('.match-card-h');
-      if (!card) return;
-      const id = card.dataset.matchId;
-      svg.querySelectorAll(`[data-source="${id}"], [data-target="${id}"]`).forEach(p => p.classList.add('flow'));
-    });
-    hBracket.addEventListener('mouseout', () => {
-      svg.querySelectorAll('.h-line.flow').forEach(p => p.classList.remove('flow'));
-    });
-
     setTimeout(drawConnectors, 60);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawConnectors);
+    window.addEventListener('load', drawConnectors);
     let resizeTimer;
     window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(drawConnectors, 120); });
+    // cada ronda se desliza en horizontal de forma independiente: redibuja las líneas al deslizar
+    let scrollTimer;
+    roundScrollEls.forEach(el => {
+      el.addEventListener('scroll', () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(drawConnectors, 30);
+      }, { passive: true });
+    });
     if (window.lucide) lucide.createIcons();
   })();
 
@@ -1922,7 +1978,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('giveawayGenBtn').addEventListener('click', () => {
-    const ticket = 'LP-2026-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+    const ticket = 'KX-2026-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
     document.getElementById('giveawayTicketNum').textContent = ticket;
     const qrImg = document.getElementById('giveawayQr');
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=8DFF00&bgcolor=050505&data=${encodeURIComponent(ticket)}`;
