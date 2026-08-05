@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>KRONIXE SPORTS — Season 01 | Blood Strike</title>
-<meta name="description" content="KRONIXE SPORTS Season 01. Torneo de Blood Strike. 500 USD garantizados. Compite. Sobrevive. Conquista.">
+<title>KRONIX ESPORTS — Season 01 | Blood Strike</title>
+<meta name="description" content="KRONIX ESPORTS Season 01. Torneo de Blood Strike. 500 USD garantizados. Compite. Sobrevive. Conquista.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 
 <style>
 /* ============================================================
-   KRONIXE SPORTS — DESIGN TOKENS
+   KRONIX ESPORTS — DESIGN TOKENS
    Paleta: fondo casi-negro, panel carbón, acento verde neón,
    blanco y gris ceniza. Tipografía: Bebas Neue (display, estilo
    overlay de transmisión), Inter (UI/cuerpo), JetBrains Mono
@@ -173,13 +173,16 @@ ul{list-style:none}
   color:var(--text);
 }
 .nav-drawer{
-  position:fixed;inset:64px 0 0 0;z-index:99;
-  background:var(--bg);
+  position:fixed;inset:64px 0 0 0;z-index:150;
+  background:#050505;
+  background-color:#050505;
+  opacity:1;
   border-top:1px solid var(--line);
   padding:28px var(--edge);
   display:none;
   flex-direction:column;
   gap:4px;
+  overflow-y:auto;
 }
 .nav-drawer.open{display:flex}
 .nav-drawer a{
@@ -1067,12 +1070,12 @@ window.SITE_DATA = {
   // hoja: hero  [campo, valor]
   hero: {
     game: "BLOOD STRIKE",
-    title_line1: "KRONIXE",
-    title_line2: "SPORTS",
+    title_line1: "KRONIX",
+    title_line2: "ESPORTS",
     season: "SEASON 01",
     tagline: "Compite. Sobrevive. Conquista.",
     eventDates: "19 y 20 de septiembre, 2026",
-    bgImage: "https://i.imgur.com/cRNucTc.png", // editable: fondo 1200x600 detrás del título "KRONIXE SPORTS"
+    bgImage: "https://i.imgur.com/cRNucTc.png", // editable: fondo 1200x600 detrás del título "KRONIX ESPORTS"
     bannerImage: "", // editable: URL de imagen 1200x600 (si se deja vacío, se usa el arte generado por CSS)
     targetDate: "2026-09-19T09:00:00-06:00" // editable: fecha/hora de inicio del torneo (día 1)
   },
@@ -1161,14 +1164,14 @@ window.SITE_DATA = {
       icon: "trophy",
       title: "Gran Final",
       teams: "2 equipos",
-      detail: "Partida única. El ganador se corona Campeón de KRONIXE SPORTS.",
+      detail: "Partida única. El ganador se corona Campeón de KRONIX ESPORTS.",
       advance: "1 campeón",
       bracket: [
         {
           title: "4. Gran Final",
           subtitle: "Partida única · Eliminación directa",
           convergeNum: "1 CAMPEÓN",
-          convergeLabel: "se corona en KRONIXE SPORTS",
+          convergeLabel: "se corona en KRONIX ESPORTS",
           matches: [
             { id: 1, teams: ["Finalista 1", "Finalista 2"], result: "" }
           ]
@@ -1270,7 +1273,7 @@ window.SITE_DATA = {
 <!-- NAV -->
 <header class="nav">
   <div class="container nav-inner">
-    <a href="#" class="logo"><span>KX</span>SPORTS<small>&nbsp;S01</small></a>
+    <a href="#" class="logo"><span>KX</span>ESPORTS<small>&nbsp;S01</small></a>
     <nav class="nav-links">
       <a href="#torneo">Torneo</a>
       <a href="#cronograma">Cronograma</a>
@@ -1285,17 +1288,17 @@ window.SITE_DATA = {
       <i data-lucide="menu" id="navToggleIcon"></i>
     </button>
   </div>
-  <div class="nav-drawer" id="navDrawer">
-    <a href="#torneo">Torneo</a>
-    <a href="#cronograma">Cronograma</a>
-    <a href="#bracket">Bracket</a>
-    <a href="#reglamento">Reglamento</a>
-    <a href="registro.html" target="_blank" rel="noopener">Registro</a>
-    <a href="#giveaway">Giveaway</a>
-    <a href="#faq">FAQ</a>
-    <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary">Registrarse</a>
-  </div>
 </header>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#torneo">Torneo</a>
+  <a href="#cronograma">Cronograma</a>
+  <a href="#bracket">Bracket</a>
+  <a href="#reglamento">Reglamento</a>
+  <a href="registro.html" target="_blank" rel="noopener">Registro</a>
+  <a href="#giveaway">Giveaway</a>
+  <a href="#faq">FAQ</a>
+  <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary">Registrarse</a>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="torneo">
@@ -1485,7 +1488,7 @@ window.SITE_DATA = {
       <div class="ticket-num" id="giveawayTicketNum"></div>
       <img id="giveawayQr" width="160" height="160" alt="Código QR del ticket">
       <div class="btn-row" style="justify-content:center">
-        <a href="#" id="giveawayDownload" download="kronixe-ticket.png" class="btn btn-primary"><i data-lucide="download" style="width:16px;height:16px"></i> Descargar Ticket</a>
+        <a href="#" id="giveawayDownload" download="kronix-ticket.png" class="btn btn-primary"><i data-lucide="download" style="width:16px;height:16px"></i> Descargar Ticket</a>
       </div>
     </div>
 
@@ -1514,7 +1517,7 @@ window.SITE_DATA = {
     </div>
     <div class="foot-cols" id="footCols"></div>
     <div class="foot-bottom">
-      <span>© 2026 KRONIXE SPORTS. Todos los derechos reservados.</span>
+      <span>© 2026 KRONIX ESPORTS. Todos los derechos reservados.</span>
       <div class="foot-social">
         <a href="#" aria-label="Discord"><i data-lucide="message-circle" style="width:16px;height:16px"></i></a>
         <a href="#" aria-label="Instagram"><i data-lucide="instagram" style="width:16px;height:16px"></i></a>
@@ -1555,7 +1558,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroTagline').textContent = D.hero.tagline;
   document.getElementById('heroDates').innerHTML = `<i data-lucide="calendar" style="width:12px;height:12px;vertical-align:-2px"></i> <b>${D.hero.eventDates}</b>`;
   if (D.hero.bannerImage){
-    document.getElementById('heroBanner').innerHTML = `<img src="${D.hero.bannerImage}" alt="KRONIXE SPORTS">`;
+    document.getElementById('heroBanner').innerHTML = `<img src="${D.hero.bannerImage}" alt="KRONIX ESPORTS">`;
   }
   if (D.hero.bgImage){
     const heroBg = document.querySelector('.hero-bg');
