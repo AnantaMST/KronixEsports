@@ -696,6 +696,17 @@ ul{list-style:none}
   background:#030303;
 }
 .banner-1200 img{width:100%;height:100%;object-fit:cover;display:block}
+.full-bleed{
+  width:100vw;
+  max-width:100vw;
+  position:relative;
+  left:50%;
+  right:50%;
+  margin-left:-50vw;
+  margin-right:-50vw;
+  border-left:none;
+  border-right:none;
+}
 .banner-art{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -1078,7 +1089,7 @@ window.SITE_DATA = {
     tagline: "Compite. Sobrevive. Conquista.",
     eventDates: "19 y 20 de septiembre, 2026",
     bgImage: "https://i.imgur.com/cRNucTc.png", // editable: fondo 1200x600 detrás del título "KRONIX ESPORTS"
-    bannerImage: "", // editable: URL de imagen 1200x600 (si se deja vacío, se usa el arte generado por CSS)
+    bannerImage: "https://i.imgur.com/ldlAi4v.png", // editable: URL de imagen 1200x600 (si se deja vacío, se usa el arte generado por CSS)
     targetDate: "2026-09-19T09:00:00-06:00" // editable: fecha/hora de inicio del torneo (día 1)
   },
   // hoja: stats  [label, value]
@@ -1254,8 +1265,7 @@ window.SITE_DATA = {
   // ahora viven en registro.html (se abre en pestaña nueva), no aquí.
   // hoja: giveaway  [campo, valor] — Community Giveaway / concurso de redes sociales
   giveaway: {
-    bannerImage: "https://i.imgur.com/Js4UdCp.png", // editable: banner 1200x600 "PREMIO 500$"
-    prizeImage: "https://i.imgur.com/YilJDww.png", // editable: imagen 1200x600 del sorteo (monitor gamer)
+    prizeImage: "https://i.imgur.com/hliIjrx.png", // editable: imagen 1200x600 del sorteo (monitor gamer)
     prizeName: "Monitor Gamer Spidertec 27\"",
     prizeSpecs: ["27\" Full HD", "Alta respuesta", "Entrada HDMI", "Entrada DisplayPort"],
     drawDate: "20 de septiembre, 2026",
@@ -1324,7 +1334,7 @@ window.SITE_DATA = {
     </div>
     <div class="hero-dates" id="heroDates"></div>
 
-    <div class="banner-1200 reveal" id="heroBanner" style="margin-top:44px">
+    <div class="banner-1200 full-bleed reveal" id="heroBanner" style="margin-top:44px">
       <div class="banner-art">
         <span class="banner-icon"><i data-lucide="swords"></i></span>
         <span class="banner-eyebrow">Blood Strike · Season 01</span>
@@ -1455,16 +1465,11 @@ window.SITE_DATA = {
     <div class="giveaway-grid">
       <div class="giveaway-prize-card hud reveal">
         <span class="hud-tr"></span><span class="hud-bl"></span>
-        <div class="banner-1200" id="giveawayPrizeImg" style="margin-bottom:18px"></div>
+        <div class="banner-1200" id="giveawayPrizeImg" style="margin:-26px -26px 18px -26px;width:calc(100% + 52px);border:none"></div>
         <div class="eyebrow">Premio</div>
         <div class="giveaway-prize-name" id="giveawayPrizeName"></div>
         <div class="giveaway-specs" id="giveawaySpecs"></div>
         <a href="#giveaway" class="btn btn-ghost">Ver Especificaciones</a>
-      </div>
-      <div class="giveaway-progress-card reveal">
-        <div class="eyebrow">Tu progreso</div>
-        <div class="progress-track"><div class="progress-fill" id="giveawayFill"></div></div>
-        <div class="progress-label"><span>0%</span><b id="giveawayPct">0%</b><span>100%</span></div>
       </div>
     </div>
 
@@ -1930,9 +1935,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('giveawayDesc').textContent =
     'Durante esta edición cualquier miembro de la comunidad participa GRATIS. Completa las tareas y obtén tu número para el sorteo en la transmisión oficial.';
   document.getElementById('giveawayPrizeName').textContent = D.giveaway.prizeName;
-  if (D.giveaway.bannerImage){
-    document.getElementById('giveawayBanner').innerHTML = `<img src="${D.giveaway.bannerImage}" alt="Premio 500 USD">`;
-  }
   if (D.giveaway.prizeImage){
     document.getElementById('giveawayPrizeImg').innerHTML = `<img src="${D.giveaway.prizeImage}" alt="${D.giveaway.prizeName}">`;
   }
@@ -1942,9 +1944,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const completed = new Set();
 
   function updateGiveawayProgress(){
-    const pct = Math.round((completed.size / D.giveaway.tasks.length) * 100);
-    document.getElementById('giveawayFill').style.width = pct + '%';
-    document.getElementById('giveawayPct').textContent = pct + '%';
     const unlock = document.getElementById('giveawayUnlock');
     if (completed.size === D.giveaway.tasks.length){
       unlock.hidden = false;
