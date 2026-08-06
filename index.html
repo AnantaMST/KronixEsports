@@ -564,6 +564,25 @@ ul{list-style:none}
 .match-detail-item .dv{font-size:14px;color:var(--text);font-weight:600}
 .match-detail-links{display:flex;gap:10px;flex-wrap:wrap}
 
+/* contenido del pop-up de reglamento */
+.reg-doc-sub{font-family:var(--f-mono);font-size:11px;color:var(--gray);letter-spacing:.05em;margin-bottom:22px}
+.reg-section{padding:18px 0;border-top:1px solid var(--line)}
+.reg-section:first-child{border-top:none;padding-top:0}
+.reg-section-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.reg-section-num{font-family:var(--f-mono);font-size:12px;color:var(--primary)}
+.reg-section-title{font-family:var(--f-display);font-size:19px;text-transform:uppercase;letter-spacing:.01em}
+.reg-section p{color:#cfcfcf;font-size:13.5px;line-height:1.6;margin-bottom:8px}
+.reg-section-intro{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);margin:10px 0 8px}
+.reg-list{display:flex;flex-direction:column;gap:6px;margin-bottom:4px}
+.reg-list li{display:flex;gap:8px;font-size:13.5px;color:#cfcfcf;line-height:1.5}
+.reg-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:7px}
+.reg-warning{
+  margin-top:20px;background:rgba(255,82,82,.06);border:1px solid #ff5252;padding:16px 18px;
+}
+.reg-warning-title{font-family:var(--f-display);font-size:18px;color:#ff5252;text-transform:uppercase;margin-bottom:8px}
+.reg-warning p{color:#cfcfcf;font-size:13px;margin-bottom:8px}
+.reg-warning li::before{background:#ff5252}
+
 /* ============================================================
    MODAL — plantel de equipos por fase (se llena desde el CSV)
    ============================================================ */
@@ -1264,6 +1283,112 @@ window.SITE_DATA = {
   // Nota: el reglamento completo y la config de notificación de registro
   // ahora viven en registro.html (se abre en pestaña nueva), no aquí.
   // hoja: giveaway  [campo, valor] — Community Giveaway / concurso de redes sociales
+  // hoja: reglamento — reglamento oficial completo (se muestra en el pop-up)
+  reglamento: {
+    title: "Reglamento Oficial KRONIX",
+    subtitle: "Blood Strike · Season 1",
+    sections: [
+      { n:1, title:"Objetivo", body:[
+        "KRONIX organiza este torneo con el propósito de promover la competencia sana, el trabajo en equipo y el crecimiento de la comunidad gamer.",
+        "La participación implica la aceptación total de este reglamento."
+      ]},
+      { n:2, title:"Elegibilidad", list:[
+        "La inscripción está abierta para cualquier jugador.",
+        "Todos los integrantes deben registrarse correctamente.",
+        "Cada jugador solo puede participar en un único equipo.",
+        "No se permiten jugadores duplicados en distintos equipos."
+      ]},
+      { n:3, title:"Equipos", intro:"Cada equipo deberá:", list:[
+        "Tener un nombre oficial.",
+        "Contar con 4 jugadores titulares.",
+        "Registrar un capitán.",
+        "Proporcionar un logo del equipo.",
+        "Proporcionar redes sociales.",
+        "Proporcionar un canal de Twitch (o plataforma autorizada) para transmitir la partida."
+      ]},
+      { n:4, title:"Inscripción", body:[
+        "Valor de inscripción: 10 USD por jugador.",
+        "La inscripción solo será válida una vez confirmado el pago.",
+        "No existen reembolsos después del cierre de inscripciones."
+      ]},
+      { n:5, title:"Formato del Torneo", list:[
+        "Eliminación directa.",
+        "Llaves (Bracket).",
+        "Cada ronda eliminará un equipo.",
+        "Los ganadores avanzarán hasta la Gran Final.",
+        "El formato de cada enfrentamiento será anunciado antes del evento."
+      ]},
+      { n:6, title:"Horarios", body:[
+        "Los equipos deberán presentarse 30 minutos antes del inicio de su encuentro.",
+        "Si un equipo no se presenta dentro del tiempo establecido será descalificado automáticamente."
+      ]},
+      { n:7, title:"Responsabilidad Técnica", intro:"Cada participante es completamente responsable de contar con:", list:[
+        "Conexión estable a Internet.",
+        "Energía eléctrica suficiente.",
+        "UPS o sistema de respaldo recomendado.",
+        "Equipo de cómputo funcional.",
+        "Periféricos en buen estado.",
+        "Juego actualizado.",
+        "Cuenta de Blood Strike operativa."
+      ], outro:"KRONIX no se hace responsable por:", list2:[
+        "Cortes eléctricos.",
+        "Problemas del proveedor de Internet.",
+        "Fallas de hardware.",
+        "Problemas del juego.",
+        "Desconexiones.",
+        "Daños al equipo."
+      ]},
+      { n:8, title:"Desconexiones", body:[
+        "Las desconexiones serán responsabilidad exclusiva del jugador.",
+        "Solo se repetirá una partida si la organización determina que existió un problema general del servidor o del torneo."
+      ]},
+      { n:9, title:"Conducta", intro:"Está prohibido:", list:[
+        "Uso de hacks.", "Cheats.", "Scripts.", "Macros ilegales.", "Software de terceros.",
+        "Bugs explotables.", "Toxicidad.", "Insultos.", "Racismo.", "Xenofobia.",
+        "Discriminación.", "Acoso.", "Suplantación de identidad."
+      ], body:[
+        "El incumplimiento podrá generar descalificación inmediata."
+      ]},
+      { n:10, title:"Streaming", body:[
+        "Cada equipo deberá transmitir sus partidas mediante el canal registrado durante la inscripción.",
+        "KRONIX podrá retransmitir cualquier partida.",
+        "Al participar, los jugadores autorizan el uso de su contenido para fines promocionales."
+      ]},
+      { n:11, title:"Cambios de Jugadores", body:[
+        "Una vez iniciado el torneo no podrán realizarse cambios de jugadores salvo autorización expresa de la organización."
+      ]},
+      { n:12, title:"Premios", body:[
+        "Los premios serán entregados una vez finalizado el torneo y verificados todos los resultados.",
+        "La organización podrá solicitar información adicional antes de realizar la entrega."
+      ]},
+      { n:13, title:"Decisiones Arbitrales", body:[
+        "Las decisiones de los administradores y árbitros son definitivas.",
+        "No habrá apelaciones una vez emitido el fallo."
+      ]},
+      { n:14, title:"Cambios en el Reglamento", body:[
+        "KRONIX podrá modificar este reglamento cuando sea necesario para garantizar el correcto desarrollo del torneo.",
+        "Las modificaciones serán publicadas oportunamente."
+      ]},
+      { n:15, title:"Aceptación", body:[
+        "Al completar la inscripción, todos los jugadores declaran haber leído, comprendido y aceptado íntegramente este reglamento y las decisiones de la organización."
+      ]}
+    ],
+    disqualification: {
+      title: "Descalificación inmediata",
+      intro: "Un equipo podrá ser descalificado por cualquiera de las siguientes razones:",
+      list: [
+        "No presentarse a la hora programada.",
+        "Utilizar software ilegal.",
+        "Suplantar jugadores.",
+        "Falsificar información del registro.",
+        "Tener conductas antideportivas.",
+        "Manipular resultados.",
+        "Incumplir instrucciones de los administradores.",
+        "Intentar perjudicar el desarrollo del torneo.",
+        "Compartir cuentas o permitir que otra persona juegue en su lugar."
+      ]
+    }
+  },
   giveaway: {
     prizeImage: "https://i.imgur.com/hliIjrx.png", // editable: imagen 1200x600 del sorteo (monitor gamer)
     prizeName: "Monitor Gamer Spidertec 27\"",
@@ -1290,7 +1415,7 @@ window.SITE_DATA = {
       <a href="#torneo">Torneo</a>
       <a href="#cronograma">Cronograma</a>
       <a href="#bracket">Bracket</a>
-      <a href="#reglamento">Reglamento</a>
+      <a href="#reglamento" class="js-open-reglamento">Reglamento</a>
       <a href="registro.html" target="_blank" rel="noopener">Registro</a>
       <a href="#giveaway">Giveaway</a>
       <a href="#faq">FAQ</a>
@@ -1305,7 +1430,7 @@ window.SITE_DATA = {
   <a href="#torneo">Torneo</a>
   <a href="#cronograma">Cronograma</a>
   <a href="#bracket">Bracket</a>
-  <a href="#reglamento">Reglamento</a>
+  <a href="#reglamento" class="js-open-reglamento">Reglamento</a>
   <a href="registro.html" target="_blank" rel="noopener">Registro</a>
   <a href="#giveaway">Giveaway</a>
   <a href="#faq">FAQ</a>
@@ -1323,7 +1448,7 @@ window.SITE_DATA = {
 
     <div class="btn-row">
       <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="zap" style="width:16px;height:16px"></i> Registrarse</a>
-      <a href="#reglamento" class="btn btn-ghost"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver Reglamento</a>
+      <a href="#reglamento" class="btn btn-ghost js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver Reglamento</a>
     </div>
 
     <div class="countdown" id="countdown" aria-live="polite">
@@ -1406,6 +1531,22 @@ window.SITE_DATA = {
   </div>
 </div>
 
+<!-- MODAL — reglamento oficial -->
+<div class="modal-overlay" id="reglamentoModal" aria-hidden="true">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="reglamentoModalTitle">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Reglamento</div>
+        <div class="modal-title" id="reglamentoModalTitle">Reglamento Oficial</div>
+      </div>
+      <button class="modal-close" id="reglamentoModalClose" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <div id="reglamentoModalBody"></div>
+  </div>
+</div>
+
 <!-- COMO PARTICIPAR -->
 <section class="section" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="container">
@@ -1423,10 +1564,11 @@ window.SITE_DATA = {
     <div class="section-head reveal">
       <div class="eyebrow">Reglamento</div>
       <h2 class="section-title">Reglas del<br>campo de batalla</h2>
-      <p class="section-sub">Conexión estable, respaldo eléctrico, transmisión obligatoria y cero tolerancia a hacks. El reglamento completo se lee y se acepta durante el registro, antes de confirmar tu equipo.</p>
+      <p class="section-sub">Conexión estable, respaldo eléctrico, transmisión obligatoria y cero tolerancia a hacks. El reglamento completo se acepta durante el registro, antes de confirmar tu equipo.</p>
     </div>
     <div class="btn-row" style="margin-top:8px">
-      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary">Ver reglamento y registrarme</a>
+      <a href="#reglamento" class="btn btn-primary js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver reglamento completo</a>
+      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-ghost">Registrarme</a>
     </div>
   </div>
 </section>
@@ -1808,6 +1950,62 @@ document.addEventListener('DOMContentLoaded', () => {
   matchModal.addEventListener('click', e => { if (e.target === matchModal) closeMatchModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMatchModal(); });
 
+  /* ---------- Pop-up de reglamento ---------- */
+  const reglamentoModal = document.getElementById('reglamentoModal');
+  const reglamentoModalClose = document.getElementById('reglamentoModalClose');
+
+  function renderReglamento(){
+    const R = D.reglamento;
+    document.getElementById('reglamentoModalTitle').textContent = R.title;
+    const secHtml = R.sections.map(s => {
+      let html = `<div class="reg-section"><div class="reg-section-head"><span class="reg-section-num">${String(s.n).padStart(2,'0')}</span><span class="reg-section-title">${s.title}</span></div>`;
+      if (s.body) html += s.body.map(p => `<p>${p}</p>`).join('');
+      if (s.intro) html += `<div class="reg-section-intro">${s.intro}</div>`;
+      if (s.list) html += `<ul class="reg-list">${s.list.map(li => `<li>${li}</li>`).join('')}</ul>`;
+      if (s.outro) html += `<div class="reg-section-intro">${s.outro}</div>`;
+      if (s.list2) html += `<ul class="reg-list">${s.list2.map(li => `<li>${li}</li>`).join('')}</ul>`;
+      html += `</div>`;
+      return html;
+    }).join('');
+    const dq = R.disqualification;
+    const dqHtml = `<div class="reg-warning">
+      <div class="reg-warning-title">⚠️ ${dq.title}</div>
+      <p>${dq.intro}</p>
+      <ul class="reg-list reg-warning">${dq.list.map(li => `<li>${li}</li>`).join('')}</ul>
+    </div>`;
+    document.getElementById('reglamentoModalBody').innerHTML =
+      `<div class="reg-doc-sub">${R.subtitle}</div>${secHtml}${dqHtml}`;
+  }
+  renderReglamento();
+
+  function openReglamentoModal(){
+    reglamentoModal.classList.add('open');
+    reglamentoModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.lucide) lucide.createIcons();
+  }
+  function closeReglamentoModal(){
+    reglamentoModal.classList.remove('open');
+    reglamentoModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  reglamentoModalClose.addEventListener('click', closeReglamentoModal);
+  reglamentoModal.addEventListener('click', e => { if (e.target === reglamentoModal) closeReglamentoModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReglamentoModal(); });
+
+  // cualquier botón/link marcado como "abrir reglamento" dispara el pop-up en vez de navegar
+  // (delegado en document para que también funcione con links generados más tarde, como el del footer)
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('.js-open-reglamento');
+    if (!trigger) return;
+    e.preventDefault();
+    openReglamentoModal();
+    navDrawer.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', false);
+    navToggle.innerHTML = '<i data-lucide="menu"></i>';
+    if (window.lucide) lucide.createIcons();
+  });
+
   /* ---------- Llave de eliminación horizontal (bracket profesional) ---------- */
   (function initEliminationBracket(){
     // aplanar todas las partidas por id y propagar ganadores a la siguiente ronda
@@ -2043,7 +2241,8 @@ document.addEventListener('DOMContentLoaded', () => {
     el.className = 'foot-col';
     el.innerHTML = `<div class="foot-col-title">${col}</div>` + links.map(([label, href]) => {
       const ext = href.endsWith('.html') ? ' target="_blank" rel="noopener"' : '';
-      return `<a href="${href}"${ext}>${label}</a>`;
+      const cls = label === 'Reglamento' ? ' class="js-open-reglamento"' : '';
+      return `<a href="${href}"${ext}${cls}>${label}</a>`;
     }).join('');
     footCols.appendChild(el);
   });
