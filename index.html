@@ -27,6 +27,8 @@
   --primary:       #44D379;
   --primary-dim:   #2C894F;
   --primary-glow:  rgba(68,211,121,.35);
+  --accent-purple: #8A2BE2;
+  --accent-pink:   #FF1493;
   --text:          #FFFFFF;
   --gray:          #888888;
   --gray-dim:      #555555;
@@ -36,7 +38,7 @@
   --f-mono:    'JetBrains Mono', monospace;
 
   --container: 1180px;
-  --edge: 20px;
+  --edge: 0px;
   --radius: 2px;
 }
 
@@ -430,10 +432,10 @@ ul{list-style:none}
 /* ============================================================
    LLAVE DE ELIMINACIÓN — bracket vertical profesional
    (rondas apiladas de arriba hacia abajo)
-   Color de acento propio de este componente: #C6FF00
+   Color de acento: el verde principal de la marca (--primary)
    ============================================================ */
 .h-bracket-scroll{
-  --bracket-accent:#C6FF00;
+  --bracket-accent:var(--primary);
   overflow-x:hidden;
   padding:10px 4px 26px;
 }
@@ -1037,7 +1039,7 @@ footer{
    DESKTOP  (≥768px)
    ============================================================ */
 @media (min-width:768px){
-  :root{--edge:40px}
+  :root{--edge:0px}
   .section{padding:110px 0}
   .nav-links{display:flex}
   .nav-cta{display:inline-flex}
@@ -1444,14 +1446,6 @@ window.SITE_DATA = {
 <!-- COMMUNITY GIVEAWAY / concurso de redes sociales -->
 <section class="section" id="giveaway">
   <div class="container">
-    <div class="banner-1200 reveal" id="giveawayBanner" style="margin-bottom:36px">
-      <div class="banner-art">
-        <span class="banner-icon"><i data-lucide="trophy"></i></span>
-        <span class="banner-eyebrow">Premio</span>
-        <div class="banner-amount">500$</div>
-      </div>
-    </div>
-
     <div class="section-head reveal" style="text-align:center;max-width:540px;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center">Community Giveaway</div>
       <h2 class="section-title">Gana un Monitor<br>Gamer Spidertec 27"</h2>
@@ -1690,7 +1684,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTeamsModal(); });
 
   /* ---------- Árbol de fases (siempre visible, ordenado por rondas) ---------- */
-  const ROUND_COLORS = ['#4FC3F7', '#FFD166', '#8DFF00', '#B47AFF', '#FF5C5C'];
+  const ROUND_COLORS = ['#44D379', '#4FC3F7', '#8A2BE2', '#FF1493', '#FFD166'];
   const bracketWrap = document.getElementById('bracketPhases');
   let roundIdx = 0;
 
@@ -1711,8 +1705,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="tree-round-sub">${phase.teams} · ${phase.detail}</div>
       </div>
       <div class="group-grid">
-        ${order.map(g => `
-          <div class="group-box">
+        ${order.map((g, gi) => `
+          <div class="group-box" style="--round-accent:${ROUND_COLORS[gi % ROUND_COLORS.length]}">
             <div class="group-box-head">
               <div class="group-box-title">${g}</div>
               <div class="group-box-sub">${groups[g].length} equipos</div>
