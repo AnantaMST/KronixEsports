@@ -446,7 +446,7 @@ ul{list-style:none}
   flex-direction:column;
   align-items:center;
   gap:56px;
-  padding:20px 10px;
+  padding:20px 0;
 }
 .h-bracket-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .h-line{fill:none;stroke:var(--line);stroke-width:2;transition:stroke .3s ease, stroke-width .3s ease}
@@ -464,7 +464,7 @@ ul{list-style:none}
   display:flex;flex-direction:row;flex-wrap:nowrap;
   gap:22px;width:100%;
   overflow-x:auto;
-  padding:6px 4px 16px;
+  padding:6px 0 16px;
   scroll-snap-type:x proximity;
   -webkit-overflow-scrolling:touch;
   justify-content:flex-start;
@@ -476,14 +476,26 @@ ul{list-style:none}
 .h-bracket-round.semis,
 .h-bracket-round.final{
   overflow-x:visible;
-  flex-wrap:nowrap;
+  flex-wrap:wrap;
 }
 .h-bracket-round.cuartos .match-card-h,
 .h-bracket-round.semis .match-card-h,
 .h-bracket-round.final .match-card-h{
-  flex:0 1 260px;
+  flex:0 1 240px;
   width:auto;
   min-width:0;
+}
+@media (min-width:640px){
+  .h-bracket-round.cuartos,
+  .h-bracket-round.semis,
+  .h-bracket-round.final{
+    flex-wrap:nowrap;
+  }
+  .h-bracket-round.cuartos .match-card-h,
+  .h-bracket-round.semis .match-card-h,
+  .h-bracket-round.final .match-card-h{
+    flex:0 1 260px;
+  }
 }
 .h-round-block{width:100%}
 .h-round-label{
