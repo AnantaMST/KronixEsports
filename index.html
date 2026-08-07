@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>KRONIX ESPORTS — Season 01 | Blood Strike</title>
-<meta name="description" content="KRONIX ESPORTS Season 01. Torneo de Blood Strike. 500 USD garantizados. Compite. Sobrevive. Conquista.">
+<meta name="description" content="KRONIX ESPORTS Season 01. Torneo de Blood Strike. 400 USD garantizados. Compite. Sobrevive. Conquista.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -363,6 +363,30 @@ ul{list-style:none}
   text-shadow:0 0 50px var(--primary-glow);
 }
 .prize-note{color:var(--gray);font-size:14px;max-width:440px;margin:0 auto}
+.prize-copy{max-width:620px;margin:0 auto;text-align:center}
+.prize-headline{
+  font-family:var(--f-display);
+  font-size:clamp(24px,6vw,34px);
+  text-transform:uppercase;letter-spacing:.01em;
+  line-height:1.15;margin-bottom:18px;
+}
+.prize-headline .amt{color:var(--primary);text-shadow:0 0 24px var(--primary-glow)}
+.prize-copy p{color:#cfcfcf;font-size:14.5px;line-height:1.7;margin-bottom:14px}
+.prize-copy p b{color:var(--primary);font-weight:700}
+.prize-question{
+  font-family:var(--f-display);font-size:clamp(18px,4vw,22px);
+  text-transform:uppercase;letter-spacing:.01em;color:var(--primary);
+  margin:20px 0 4px;
+}
+.prize-cta{
+  margin-top:24px;padding-top:22px;
+  border-top:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.prize-cta-text{
+  font-family:var(--f-mono);font-size:12px;letter-spacing:.03em;
+  color:var(--gray);max-width:420px;line-height:1.6;
+}
 
 /* ============================================================
    ÁRBOL DE FASES — siempre visible, ordenado como el mundial
@@ -470,34 +494,39 @@ ul{list-style:none}
   justify-content:flex-start;
 }
 .h-bracket-round.final{justify-content:center}
-.h-bracket-round.semis{justify-content:center}
-.h-bracket-round.cuartos{justify-content:center}
-.h-bracket-round.cuartos,
-.h-bracket-round.semis,
-.h-bracket-round.final{
-  overflow-x:visible;
-  flex-wrap:wrap;
-}
-.h-bracket-round.cuartos .match-card-h,
-.h-bracket-round.semis .match-card-h,
-.h-bracket-round.final .match-card-h{
-  flex:0 1 240px;
-  width:auto;
-  min-width:0;
-}
+/* En móvil, Cuartos y Semifinal se deslizan igual que Octavos (nunca se apilan en columna) */
 @media (min-width:640px){
+  .h-bracket-round.semis{justify-content:center}
+  .h-bracket-round.cuartos{justify-content:center}
   .h-bracket-round.cuartos,
   .h-bracket-round.semis,
   .h-bracket-round.final{
+    overflow-x:visible;
     flex-wrap:nowrap;
   }
   .h-bracket-round.cuartos .match-card-h,
   .h-bracket-round.semis .match-card-h,
   .h-bracket-round.final .match-card-h{
     flex:0 1 260px;
+    width:auto;
+    min-width:0;
   }
 }
 .h-round-block{width:100%}
+.h-scroll-indicator{
+  width:100%;height:3px;
+  background:var(--line);
+  margin-top:2px;
+  position:relative;
+  overflow:hidden;
+  border-radius:2px;
+}
+.h-scroll-thumb{
+  position:absolute;top:0;left:0;height:100%;
+  background:var(--bracket-accent);
+  border-radius:2px;
+  transition:left .1s linear;
+}
 .h-round-label{
   width:100%;
   text-align:center;margin-bottom:16px;
@@ -522,11 +551,10 @@ ul{list-style:none}
   box-shadow:0 14px 30px -14px rgba(198,255,0,.35);
 }
 @media (max-width:380px){
-  .h-bracket-round.octavos .match-card-h{width:100%;max-width:280px}
+  .h-bracket-round.octavos .match-card-h,
   .h-bracket-round.cuartos .match-card-h,
-  .h-bracket-round.semis .match-card-h,
-  .h-bracket-round.final .match-card-h{padding:10px 10px}
-  .h-bracket-round.final .match-card-h{transform:scale(1)}
+  .h-bracket-round.semis .match-card-h{width:100%;max-width:280px}
+  .h-bracket-round.final .match-card-h{padding:10px 10px;transform:scale(1)}
 }
 .match-card-h.decided{
   border-color:var(--bracket-accent);
@@ -860,6 +888,21 @@ input[type=file]{padding:10px;font-size:11.5px;color:var(--gray)}
 }
 .giveaway-prize-name{font-family:var(--f-display);font-size:26px;text-transform:uppercase;letter-spacing:.01em}
 .giveaway-specs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
+.giveaway-copy{margin-bottom:22px}
+.giveaway-copy-headline{
+  font-family:var(--f-display);font-size:clamp(19px,4.5vw,24px);
+  text-transform:uppercase;letter-spacing:.01em;color:var(--text);
+  margin-bottom:12px;line-height:1.2;
+}
+.giveaway-copy p{color:#cfcfcf;font-size:13.5px;line-height:1.65;margin-bottom:10px}
+.giveaway-copy-question{
+  font-family:var(--f-display);font-size:17px;text-transform:uppercase;
+  letter-spacing:.01em;color:var(--primary);margin:14px 0 6px;
+}
+.giveaway-copy-hint{
+  font-family:var(--f-mono);font-size:11.5px;color:var(--gray);
+  letter-spacing:.02em;line-height:1.6;
+}
 .giveaway-spec{
   font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
   border:1px solid var(--line);color:var(--gray);padding:6px 10px;
@@ -917,7 +960,7 @@ input[type=file]{padding:10px;font-size:11.5px;color:var(--gray)}
   display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
   background:var(--line);border:1px solid var(--line);margin-top:32px;
 }
-@media (min-width:640px){.giveaway-stats{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:640px){.giveaway-stats{grid-template-columns:repeat(3,1fr)}}
 .gstat{background:var(--bg);padding:22px 14px;text-align:center}
 .gstat b{display:block;font-family:var(--f-mono);font-weight:700;font-size:clamp(20px,5vw,26px);color:var(--primary)}
 .gstat span{font-family:var(--f-mono);font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em}
@@ -1128,7 +1171,7 @@ window.SITE_DATA = {
   stats: [
     { value: 148, label: "Jugadores" },
     { value: 37,  label: "Equipos" },
-    { value: 500, label: "USD Prize Pool", prefix: "$" }
+    { value: 400, label: "USD Prize Pool", prefix: "$" }
   ],
   // hoja: phases  [orden, icono, titulo, equipos, detalle, avanzan]
   // "icono" es un nombre de icono de lucide.dev (ej: users, swords, trophy)
@@ -1285,7 +1328,7 @@ window.SITE_DATA = {
     { q: "¿Qué pasa si se me corta la luz o el internet?", a: "Los cortes eléctricos o fallas de conexión son responsabilidad exclusiva del jugador. Se recomienda contar con respaldo eléctrico (UPS, planta o batería). La organización no repite partidas por fallas individuales." },
     { q: "¿Puedo jugar sin transmitir?", a: "No. Cada equipo debe transmitir sus partidas por Twitch, Kick o YouTube durante todo el torneo." },
     { q: "¿Qué pasa si llego tarde?", a: "Los equipos deben presentarse 30 minutos antes del inicio de su partida. La ausencia implica descalificación automática." },
-    { q: "¿Cómo se entrega el premio?", a: "El premio de $500 USD se entrega al equipo campeón una vez finalizado el campeonato." }
+    { q: "¿Cómo se entrega el premio?", a: "El premio de $400 USD se entrega al equipo campeón una vez finalizado el campeonato." }
   ],
   // hoja: footer_links  [columna, texto, href]
   footerLinks: {
@@ -1404,18 +1447,11 @@ window.SITE_DATA = {
   },
   giveaway: {
     prizeImage: "https://i.imgur.com/hliIjrx.png", // editable: imagen 1200x600 del sorteo (monitor gamer)
+    participateUrl: "#", // editable: link de Instagram con las instrucciones para participar
     prizeName: "Monitor Gamer Spidertec 27\"",
     prizeSpecs: ["27\" Full HD", "Alta respuesta", "Entrada HDMI", "Entrada DisplayPort"],
     drawDate: "20 de septiembre, 2026",
-    statParticipants: 0,
-    statTickets: 0,
-    // hoja: giveaway_tasks  [icono, titulo, descripcion, url, texto_boton]
-    tasks: [
-      { icon: "instagram", title: "Seguir Instagram Oficial", desc: "Síguenos para novedades, brackets y sorteos.", url: "https://instagram.com/", cta: "Ir a Instagram" },
-      { icon: "youtube", title: "Suscribirse al canal de YouTube", desc: "Activa la campana para no perderte la transmisión.", url: "https://youtube.com/", cta: "Ir a YouTube" },
-      { icon: "twitch", title: "Seguir el canal de Twitch", desc: "Ahí se transmite el torneo completo en vivo.", url: "https://twitch.tv/", cta: "Ir a Twitch" },
-      { icon: "message-circle", title: "Entrar al Discord Oficial", desc: "Únete a la comunidad y entérate primero.", url: "https://discord.gg/", cta: "Entrar al Discord" }
-    ]
+    statParticipants: 0
   }
 };
 </script>
@@ -1454,8 +1490,14 @@ window.SITE_DATA = {
 <section class="hero" id="torneo">
   <div class="hero-bg"></div>
   <div class="container hero-inner">
-    <div class="hero-game">JUEGO OFICIAL — <b id="heroGame"></b></div>
-    <h1><span id="heroLine1"></span><br><em id="heroLine2"></em></h1>
+    <div class="banner-1200 full-bleed reveal" id="heroBanner">
+      <div class="banner-art">
+        <span class="banner-icon"><i data-lucide="swords"></i></span>
+        <span class="banner-eyebrow">Blood Strike · Season 01</span>
+      </div>
+    </div>
+
+    <div class="hero-game" style="margin-top:36px">JUEGO OFICIAL — <b id="heroGame"></b></div>
     <div class="hero-season" id="heroSeason"></div>
     <p class="hero-tagline" id="heroTagline"></p>
 
@@ -1471,13 +1513,6 @@ window.SITE_DATA = {
       <div class="cd-box"><div class="cd-num" id="cdSec">00</div><div class="cd-label">Seg</div></div>
     </div>
     <div class="hero-dates" id="heroDates"></div>
-
-    <div class="banner-1200 full-bleed reveal" id="heroBanner" style="margin-top:44px">
-      <div class="banner-art">
-        <span class="banner-icon"><i data-lucide="swords"></i></span>
-        <span class="banner-eyebrow">Blood Strike · Season 01</span>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1493,8 +1528,17 @@ window.SITE_DATA = {
   <div class="container">
     <div class="prize hud reveal">
       <span class="hud-tr"></span><span class="hud-bl"></span>
-      <div class="banner-1200" style="margin-bottom:22px"><img src="https://i.imgur.com/ycbQ0yp.png" alt="Premio garantizado 500 USD"></div>
-      <p class="prize-note">Premio garantizado de $500 USD, entregado en su totalidad al equipo campeón al finalizar la Gran Final.</p>
+      <div class="banner-1200" style="margin-bottom:22px"><img src="https://i.imgur.com/ycbQ0yp.png" alt="Premio garantizado 400 USD"></div>
+      <div class="prize-copy">
+        <div class="prize-headline">🏆 Gana <span class="amt">$400 USD</span> y deja tu huella</div>
+        <p>No se trata solo del premio. Se trata de demostrar que tu equipo puede enfrentarse a los mejores y convertirse en el primer campeón de <b>KRONIX Season 1</b>.</p>
+        <p>Cada partida será una oportunidad para avanzar, cada victoria te acercará a la gran final y al premio de $400 USD. Reúne a tu squad, demuestra tu estrategia y compite por la gloria frente a toda la comunidad.</p>
+        <div class="prize-question">¿Tienen lo necesario para convertirse en leyenda?</div>
+        <div class="prize-cta">
+          <div class="prize-cta-text">⚡ Las inscripciones ya están abiertas — ¡registra a tu equipo y asegura tu lugar en el torneo!</div>
+          <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="zap" style="width:16px;height:16px"></i> Registra a tu equipo</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1613,8 +1657,6 @@ window.SITE_DATA = {
   <div class="container">
     <div class="section-head reveal" style="text-align:center;max-width:540px;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center">Community Giveaway</div>
-      <h2 class="section-title">Gana un Monitor<br>Gamer Spidertec 27"</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto" id="giveawayDesc"></p>
     </div>
 
     <div class="giveaway-grid">
@@ -1624,25 +1666,16 @@ window.SITE_DATA = {
         <div class="eyebrow">Premio</div>
         <div class="giveaway-prize-name" id="giveawayPrizeName"></div>
         <div class="giveaway-specs" id="giveawaySpecs"></div>
-        <a href="#giveaway" class="btn btn-ghost">Ver Especificaciones</a>
-      </div>
-    </div>
 
-    <div class="giveaway-tasks reveal" id="giveawayTasks"></div>
+        <div class="giveaway-copy">
+          <div class="giveaway-copy-headline">🎁 ¡Llévate un Monitor Gamer de 27"!</div>
+          <p>Además del torneo, queremos premiar a toda la comunidad. Participa en nuestro Giveaway Oficial y tendrás la oportunidad de ganar un monitor gamer Spidertec de 27 pulgadas, ideal para llevar tu experiencia de juego al siguiente nivel.</p>
+          <p>Completar las tareas es muy sencillo y solo te tomará unos minutos. Sigue las instrucciones, confirma tu participación y estarás compitiendo por este increíble premio.</p>
+          <div class="giveaway-copy-question">¿Listo para participar?</div>
+          <div class="giveaway-copy-hint">👇 Haz clic en el botón y sigue las instrucciones para entrar al sorteo.</div>
+        </div>
 
-    <div class="giveaway-unlock reveal" id="giveawayUnlock" hidden>
-      <div class="emoji">🎉</div>
-      <h3>Felicidades</h3>
-      <p class="section-sub" style="margin:0 auto 20px">Has desbloqueado tu participación en el sorteo.</p>
-      <button class="btn btn-primary" id="giveawayGenBtn">Generar Ticket</button>
-    </div>
-
-    <div class="giveaway-ticket reveal" id="giveawayTicket" hidden>
-      <div class="eyebrow" style="justify-content:center">Tu número de participación</div>
-      <div class="ticket-num" id="giveawayTicketNum"></div>
-      <img id="giveawayQr" width="160" height="160" alt="Código QR del ticket">
-      <div class="btn-row" style="justify-content:center">
-        <a href="#" id="giveawayDownload" download="kronix-ticket.png" class="btn btn-primary"><i data-lucide="download" style="width:16px;height:16px"></i> Descargar Ticket</a>
+        <a href="#" id="giveawayParticipateBtn" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="gift" style="width:16px;height:16px"></i> Participar</a>
       </div>
     </div>
 
@@ -1706,8 +1739,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Hero text ---------- */
   document.getElementById('heroGame').textContent = D.hero.game;
-  document.getElementById('heroLine1').textContent = D.hero.title_line1;
-  document.getElementById('heroLine2').textContent = D.hero.title_line2;
   document.getElementById('heroSeason').textContent = D.hero.season;
   document.getElementById('heroTagline').textContent = D.hero.tagline;
   document.getElementById('heroDates').innerHTML = `<i data-lucide="calendar" style="width:12px;height:12px;vertical-align:-2px"></i> <b>${D.hero.eventDates}</b>`;
@@ -2085,8 +2116,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       block.appendChild(col);
+
+      let indicatorThumb = null;
+      if (round.key !== 'final'){
+        const indicator = document.createElement('div');
+        indicator.className = 'h-scroll-indicator';
+        indicatorThumb = document.createElement('div');
+        indicatorThumb.className = 'h-scroll-thumb';
+        indicator.appendChild(indicatorThumb);
+        block.appendChild(indicator);
+      }
+
       hBracket.appendChild(block);
-      roundScrollEls.push(col);
+      roundScrollEls.push({ el: col, thumb: indicatorThumb });
     });
     hBracket.appendChild(svg); // el svg queda al final, superpuesto sobre las columnas
 
@@ -2116,15 +2158,35 @@ document.addEventListener('DOMContentLoaded', () => {
       }));
     }
 
-    setTimeout(drawConnectors, 60);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawConnectors);
-    window.addEventListener('load', drawConnectors);
+    function updateScrollIndicators(){
+      roundScrollEls.forEach(({ el, thumb }) => {
+        if (!thumb) return;
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        const widthPct = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
+        if (widthPct >= 99.5){
+          thumb.parentElement.style.display = 'none';
+          return;
+        }
+        thumb.parentElement.style.display = 'block';
+        const scrollPct = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
+        thumb.style.width = widthPct + '%';
+        thumb.style.left = (scrollPct * (100 - widthPct)) + '%';
+      });
+    }
+
+    setTimeout(() => { drawConnectors(); updateScrollIndicators(); }, 60);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawConnectors(); updateScrollIndicators(); });
+    window.addEventListener('load', () => { drawConnectors(); updateScrollIndicators(); });
     let resizeTimer;
-    window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(drawConnectors, 120); });
-    // cada ronda se desliza en horizontal de forma independiente: redibuja las líneas al deslizar
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { drawConnectors(); updateScrollIndicators(); }, 120);
+    });
+    // cada ronda se desliza en horizontal de forma independiente: redibuja líneas + barra de navegación al deslizar
     let scrollTimer;
-    roundScrollEls.forEach(el => {
+    roundScrollEls.forEach(({ el }) => {
       el.addEventListener('scroll', () => {
+        updateScrollIndicators();
         clearTimeout(scrollTimer);
         scrollTimer = setTimeout(drawConnectors, 30);
       }, { passive: true });
@@ -2143,61 +2205,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------- Community Giveaway (concurso de redes sociales) ---------- */
-  document.getElementById('giveawayDesc').textContent =
-    'Durante esta edición cualquier miembro de la comunidad participa GRATIS. Completa las tareas y obtén tu número para el sorteo en la transmisión oficial.';
   document.getElementById('giveawayPrizeName').textContent = D.giveaway.prizeName;
   if (D.giveaway.prizeImage){
     document.getElementById('giveawayPrizeImg').innerHTML = `<img src="${D.giveaway.prizeImage}" alt="${D.giveaway.prizeName}">`;
   }
   document.getElementById('giveawaySpecs').innerHTML = D.giveaway.prizeSpecs.map(s => `<span class="giveaway-spec">${s}</span>`).join('');
-
-  const giveawayTasksEl = document.getElementById('giveawayTasks');
-  const completed = new Set();
-
-  function updateGiveawayProgress(){
-    const unlock = document.getElementById('giveawayUnlock');
-    if (completed.size === D.giveaway.tasks.length){
-      unlock.hidden = false;
-    }
-  }
-
-  D.giveaway.tasks.forEach((t, i) => {
-    const card = document.createElement('div');
-    card.className = 'task-card';
-    card.innerHTML = `
-      <span class="task-icon"><i data-lucide="${t.icon}"></i></span>
-      <div class="task-body">
-        <div class="task-title">${t.title}</div>
-        <div class="task-desc">${t.desc}</div>
-        <span class="task-status">Pendiente</span>
-      </div>
-      <a href="${t.url}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">${t.cta}</a>
-    `;
-    card.querySelector('a').addEventListener('click', () => {
-      if (!completed.has(i)){
-        completed.add(i);
-        card.classList.add('done');
-        card.querySelector('.task-status').textContent = 'Completado';
-        updateGiveawayProgress();
-      }
-    });
-    giveawayTasksEl.appendChild(card);
-  });
-
-  document.getElementById('giveawayGenBtn').addEventListener('click', () => {
-    const ticket = 'KX-2026-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
-    document.getElementById('giveawayTicketNum').textContent = ticket;
-    const qrImg = document.getElementById('giveawayQr');
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=8DFF00&bgcolor=050505&data=${encodeURIComponent(ticket)}`;
-    document.getElementById('giveawayDownload').href = qrImg.src;
-    document.getElementById('giveawayUnlock').hidden = true;
-    document.getElementById('giveawayTicket').hidden = false;
-    document.getElementById('giveawayTicket').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
+  document.getElementById('giveawayParticipateBtn').href = D.giveaway.participateUrl;
 
   const gstats = [
     { value: D.giveaway.statParticipants, label: 'Participantes' },
-    { value: D.giveaway.statTickets, label: 'Tickets Generados' },
     { value: '—', label: 'Ganador' },
     { value: D.giveaway.drawDate, label: 'Fecha del Sorteo' }
   ];
