@@ -1627,7 +1627,7 @@ window.SITE_DATA = {
         <div class="reg-nav-buttons">
           <button type="button" class="btn btn-ghost" id="regPrev">Atrás</button>
           <button type="button" class="btn btn-primary" id="regNext">Siguiente</button>
-          <button type="submit" class="btn btn-primary" id="regSubmit" hidden>Enviar Inscripción</button>
+          <button type="submit" class="btn btn-primary" id="regSubmit" hidden>Enviar Formulario</button>
         </div>
       </form>
 
@@ -1635,9 +1635,9 @@ window.SITE_DATA = {
         <i data-lucide="check-circle-2" style="width:40px;height:40px;color:var(--primary)"></i>
         <div class="eyebrow" style="justify-content:center;margin-top:16px">Inscripción recibida</div>
         <div class="folio" id="regFolio"></div>
-        <p class="section-sub" style="margin:0 auto 22px">Guarda este folio. Notificaremos al staff en <b style="color:var(--primary)" id="regNotifyEmail"></b>.</p>
+        <p class="section-sub" style="margin:0 auto 22px">Guarda este folio. Uno de los miembros de nuestro equipo se pondrá en contacto contigo para validar tus datos y completar tu inscripción.</p>
         <div class="btn-row" style="justify-content:center">
-          <a href="#" id="regMailBtn" class="btn btn-primary"><i data-lucide="mail" style="width:16px;height:16px"></i> Enviar notificación por correo</a>
+          <a href="#" id="regMailBtn" class="btn btn-primary"><i data-lucide="mail" style="width:16px;height:16px"></i> Confirmar envío por correo</a>
         </div>
       </div>
     </div>
@@ -2140,28 +2140,22 @@ document.addEventListener('DOMContentLoaded', () => {
       {name:'capEmail', label:'Correo', type:'email', required:true},
       {name:'capWhatsapp', label:'WhatsApp', type:'tel', required:true},
       {name:'capDiscord', label:'Discord', type:'text', required:true},
-      {name:'capBSId', label:'Blood Strike ID', type:'text', required:true},
-      {name:'capUID', label:'UID', type:'text', required:true}
+      {name:'capBSId', label:'Blood Strike ID', type:'text', required:true}
     ]},
     { key:'players', title:'Jugadores', repeat:3, playerFields:[
       {name:'name', label:'Nombre', type:'text', required:true},
       {name:'nick', label:'Nickname', type:'text', required:true},
       {name:'discord', label:'Discord', type:'text', required:true},
-      {name:'bsId', label:'Blood Strike ID', type:'text', required:true},
-      {name:'uid', label:'UID', type:'text', required:true}
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:true}
     ]},
     { key:'substitute', title:'Jugador Suplente (opcional)', optional:true, playerFields:[
       {name:'name', label:'Nombre', type:'text', required:false},
       {name:'nick', label:'Nickname', type:'text', required:false},
       {name:'discord', label:'Discord', type:'text', required:false},
-      {name:'bsId', label:'Blood Strike ID', type:'text', required:false},
-      {name:'uid', label:'UID', type:'text', required:false}
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:false}
     ]},
-    { key:'payment', title:'Pago', fields:[
-      {name:'txnId', label:'Número de Transacción', type:'text', required:true},
-      {name:'paymentProof', label:'Captura del Pago', type:'file', required:true}
-    ]},
-    { key:'rules', title:'Aceptar Reglamento' }
+    { key:'rules', title:'Aceptar Reglamento' },
+    { key:'confirm', title:'Enviar Inscripción' }
   ];
 
   function regFieldHTML(f, id){
@@ -2185,13 +2179,13 @@ document.addEventListener('DOMContentLoaded', () => {
     stepEl.dataset.step = i;
     let inner = `<div class="reg-step-title">${String(i+1).padStart(2,'0')} — ${step.title}</div>`;
 
-    if (step.key === 'payment'){
+    if (step.key === 'confirm'){
       const per = D.registration.pricePerPlayer;
       inner += `<div class="price-box">
         <div><b>$${per} ${D.registration.currency}</b><span>Por jugador</span></div>
         <div><b>$${per*4} ${D.registration.currency}</b><span>Total del equipo (4 jugadores)</span></div>
       </div>`;
-      inner += `<div class="field-grid">${step.fields.map(f => regFieldHTML(f, f.name)).join('')}</div>`;
+      inner += `<p style="color:#cfcfcf;font-size:13.5px;line-height:1.7">Ya casi terminas. Al enviar tu inscripción, uno de los miembros de nuestro equipo se pondrá en contacto contigo para validar tus datos y completar el proceso, incluyendo el pago de la inscripción.</p>`;
     } else if (step.key === 'rules'){
       inner += `<p style="color:#cfcfcf;font-size:13.5px;margin-bottom:16px;line-height:1.6">Antes de continuar, lee el reglamento oficial completo de KRONIX ESPORTS.</p>`;
       inner += `<div class="btn-row" style="margin-bottom:20px"><button type="button" class="btn btn-ghost js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver reglamento completo</button></div>`;
@@ -2276,17 +2270,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!validateRegStep(regStepEls[regIndex])) return;
 
     const folio = 'KX-2026-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
-    const teamNameEl = document.getElementById('teamName');
-    const capEmailEl = document.getElementById('capEmail');
-    const teamName = teamNameEl ? teamNameEl.value : '';
-    const capEmail = capEmailEl ? capEmailEl.value : '';
+    const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const teamName = val('teamName');
+    const capEmail = val('capEmail');
 
     document.getElementById('regFolio').textContent = folio;
-    document.getElementById('regNotifyEmail').textContent = D.registration.notifyEmail;
 
     const subject = encodeURIComponent(`Nueva inscripción — ${teamName || 'Equipo'} (${folio})`);
     const body = encodeURIComponent(
-      `Folio: ${folio}\nEquipo: ${teamName}\nCorreo del capitán: ${capEmail}\n\n(Generado desde el formulario de registro de KRONIX ESPORTS.)`
+      `Folio: ${folio}\n\n` +
+      `EQUIPO\nNombre: ${teamName}\nPaís: ${val('country')}\nEstado: ${val('state')}\nCiudad: ${val('city')}\nDiscord: ${val('teamDiscord')}\n\n` +
+      `CAPITÁN\nNombre: ${val('capName')} ${val('capLastName')}\nNickname: ${val('capNick')}\nCorreo: ${capEmail}\nWhatsApp: ${val('capWhatsapp')}\nDiscord: ${val('capDiscord')}\nBlood Strike ID: ${val('capBSId')}\n\n` +
+      `JUGADOR 1: ${val('player1_name')} (${val('player1_nick')}) — Discord: ${val('player1_discord')} — BS ID: ${val('player1_bsId')}\n` +
+      `JUGADOR 2: ${val('player2_name')} (${val('player2_nick')}) — Discord: ${val('player2_discord')} — BS ID: ${val('player2_bsId')}\n` +
+      `JUGADOR 3: ${val('player3_name')} (${val('player3_nick')}) — Discord: ${val('player3_discord')} — BS ID: ${val('player3_bsId')}\n\n` +
+      `(Generado desde el formulario de registro de KRONIX ESPORTS. Los archivos adjuntos — logo y captura de pago — no se incluyen en este correo; pídelos directamente al capitán.)`
     );
     document.getElementById('regMailBtn').href = `mailto:${D.registration.notifyEmail}?subject=${subject}&body=${body}`;
 
