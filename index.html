@@ -651,6 +651,7 @@ ul{list-style:none}
   overscroll-behavior:contain;
 }
 .modal-overlay.open .modal-panel{transform:translateY(0) scale(1)}
+.modal-panel.wide{max-width:820px}
 .modal-header{
   display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
   position:sticky;top:0;background:var(--panel);
@@ -1276,7 +1277,7 @@ window.SITE_DATA = {
     {
       key: "octavos", label: "Octavos de Final",
       matches: [
-        { id:"oct-1", teams:[{name:"Equipo 1"},{name:"Equipo 2"}], date:"19 Sep", time:"4:00 PM", status:"finished", winnerIndex:0, result:"2 - 1", map:"Bunker Alfa", kills:"Equipo 1: 24 · Equipo 2: 17", mvp:"Equipo 1 — Jugador X", twitch:"https://twitch.tv/", youtube:"https://youtube.com/", feedsInto:"qf-1", feedsSlot:0 },
+        { id:"oct-1", teams:[{name:"Equipo 1"},{name:"Equipo 2"}], date:"19 Sep", time:"4:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:0 },
         { id:"oct-2", teams:[{name:"Equipo 3"},{name:"Equipo 4"}], date:"19 Sep", time:"4:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:1 },
         { id:"oct-3", teams:[{name:"Equipo 5"},{name:"Equipo 6"}], date:"19 Sep", time:"5:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:2 },
         { id:"oct-4", teams:[{name:"Equipo 7"},{name:"Equipo 8"}], date:"19 Sep", time:"5:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:0 },
@@ -1333,11 +1334,15 @@ window.SITE_DATA = {
   // hoja: footer_links  [columna, texto, href]
   footerLinks: {
     "Torneo": [["Reglamento","#reglamento"],["Cronograma","#cronograma"],["Equipos","#"],["Bracket","#bracket"]],
-    "Cuenta": [["Registro","registro.html"],["Dashboard Capitán","#"],["Preguntas frecuentes","#faq"]],
+    "Cuenta": [["Registro","#registro"],["Dashboard Capitán","#"],["Preguntas frecuentes","#faq"]],
     "Comunidad": [["Discord Oficial","#"],["Twitch","#"],["Instagram","#"]]
   },
-  // Nota: el reglamento completo y la config de notificación de registro
-  // ahora viven en registro.html (se abre en pestaña nueva), no aquí.
+  // hoja: registration_config  [campo, valor] — a dónde llega la notificación de cada inscripción
+  registration: {
+    notifyEmail: "torneo@kronixesports.com", // editable: correo que recibe cada inscripción
+    pricePerPlayer: 10,
+    currency: "USD"
+  },
   // hoja: giveaway  [campo, valor] — Community Giveaway / concurso de redes sociales
   // hoja: reglamento — reglamento oficial completo (se muestra en el pop-up)
   reglamento: {
@@ -1449,9 +1454,7 @@ window.SITE_DATA = {
     prizeImage: "https://i.imgur.com/hliIjrx.png", // editable: imagen 1200x600 del sorteo (monitor gamer)
     participateUrl: "#", // editable: link de Instagram con las instrucciones para participar
     prizeName: "Monitor Gamer Spidertec 27\"",
-    prizeSpecs: ["27\" Full HD", "Alta respuesta", "Entrada HDMI", "Entrada DisplayPort"],
-    drawDate: "20 de septiembre, 2026",
-    statParticipants: 0
+    prizeSpecs: ["27\" Full HD", "Alta respuesta", "Entrada HDMI", "Entrada DisplayPort"]
   }
 };
 </script>
@@ -1465,11 +1468,11 @@ window.SITE_DATA = {
       <a href="#cronograma">Cronograma</a>
       <a href="#bracket">Bracket</a>
       <a href="#reglamento" class="js-open-reglamento">Reglamento</a>
-      <a href="registro.html" target="_blank" rel="noopener">Registro</a>
+      <a href="#registro" class="js-open-registro">Registro</a>
       <a href="#giveaway">Giveaway</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary nav-cta">Registrarse</a>
+    <a href="#registro" class="btn btn-primary nav-cta js-open-registro">Registrarse</a>
     <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
       <i data-lucide="menu" id="navToggleIcon"></i>
     </button>
@@ -1480,10 +1483,10 @@ window.SITE_DATA = {
   <a href="#cronograma">Cronograma</a>
   <a href="#bracket">Bracket</a>
   <a href="#reglamento" class="js-open-reglamento">Reglamento</a>
-  <a href="registro.html" target="_blank" rel="noopener">Registro</a>
+  <a href="#registro" class="js-open-registro">Registro</a>
   <a href="#giveaway">Giveaway</a>
   <a href="#faq">FAQ</a>
-  <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary">Registrarse</a>
+  <a href="#registro" class="btn btn-primary js-open-registro">Registrarse</a>
 </div>
 
 <!-- HERO -->
@@ -1502,7 +1505,7 @@ window.SITE_DATA = {
     <p class="hero-tagline" id="heroTagline"></p>
 
     <div class="btn-row">
-      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="zap" style="width:16px;height:16px"></i> Registrarse</a>
+      <a href="#registro" class="btn btn-primary js-open-registro"><i data-lucide="zap" style="width:16px;height:16px"></i> Registrarse</a>
       <a href="#reglamento" class="btn btn-ghost js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver Reglamento</a>
     </div>
 
@@ -1536,7 +1539,7 @@ window.SITE_DATA = {
         <div class="prize-question">¿Tienen lo necesario para convertirse en leyenda?</div>
         <div class="prize-cta">
           <div class="prize-cta-text">⚡ Las inscripciones ya están abiertas — ¡registra a tu equipo y asegura tu lugar en el torneo!</div>
-          <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="zap" style="width:16px;height:16px"></i> Registra a tu equipo</a>
+          <a href="#registro" class="btn btn-primary js-open-registro"><i data-lucide="zap" style="width:16px;height:16px"></i> Registra a tu equipo</a>
         </div>
       </div>
     </div>
@@ -1604,6 +1607,43 @@ window.SITE_DATA = {
   </div>
 </div>
 
+<!-- MODAL — registro de equipo (wizard de 6 pasos) -->
+<div class="modal-overlay" id="registroModal" aria-hidden="true">
+  <div class="modal-panel wide" role="dialog" aria-modal="true" aria-labelledby="registroModalTitle">
+    <div class="modal-header">
+      <div>
+        <div class="modal-eyebrow">Registro</div>
+        <div class="modal-title" id="registroModalTitle">Inscribe tu equipo</div>
+      </div>
+      <button class="modal-close" id="registroModalClose" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="reg-wizard">
+      <div class="reg-steps-nav" id="regStepsNav"></div>
+      <form id="regForm" novalidate>
+        <div id="regStepsBody"></div>
+        <div class="reg-nav-buttons">
+          <button type="button" class="btn btn-ghost" id="regPrev">Atrás</button>
+          <button type="button" class="btn btn-primary" id="regNext">Siguiente</button>
+          <button type="submit" class="btn btn-primary" id="regSubmit" hidden>Enviar Inscripción</button>
+        </div>
+      </form>
+
+      <div class="reg-success" id="regSuccess" hidden>
+        <i data-lucide="check-circle-2" style="width:40px;height:40px;color:var(--primary)"></i>
+        <div class="eyebrow" style="justify-content:center;margin-top:16px">Inscripción recibida</div>
+        <div class="folio" id="regFolio"></div>
+        <p class="section-sub" style="margin:0 auto 22px">Guarda este folio. Notificaremos al staff en <b style="color:var(--primary)" id="regNotifyEmail"></b>.</p>
+        <div class="btn-row" style="justify-content:center">
+          <a href="#" id="regMailBtn" class="btn btn-primary"><i data-lucide="mail" style="width:16px;height:16px"></i> Enviar notificación por correo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- COMO PARTICIPAR -->
 <section class="section" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="container">
@@ -1625,21 +1665,21 @@ window.SITE_DATA = {
     </div>
     <div class="btn-row" style="margin-top:8px">
       <a href="#reglamento" class="btn btn-primary js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver reglamento completo</a>
-      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-ghost">Registrarme</a>
+      <a href="#registro" class="btn btn-ghost js-open-registro">Registrarme</a>
     </div>
   </div>
 </section>
 
-<!-- REGISTRO — teaser (el formulario vive en registro.html, se abre en pestaña nueva) -->
+<!-- REGISTRO — teaser (abre el formulario como pop-up) -->
 <section class="section" id="registro" style="text-align:center">
   <div class="container">
     <div class="section-head reveal" style="text-align:center;max-width:520px;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center">Registro</div>
       <h2 class="section-title">Inscribe tu<br>equipo</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">6 pasos: equipo, capitán, jugadores, suplente, pago y reglamento. Se abre en una pestaña nueva.</p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">6 pasos: equipo, capitán, jugadores, suplente, pago y reglamento.</p>
     </div>
     <div class="btn-row reveal" style="justify-content:center;margin-top:8px">
-      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="external-link" style="width:16px;height:16px"></i> Ir al formulario de registro</a>
+      <a href="#registro" class="btn btn-primary js-open-registro"><i data-lucide="clipboard-list" style="width:16px;height:16px"></i> Abrir formulario de registro</a>
     </div>
   </div>
 </section>
@@ -1679,7 +1719,6 @@ window.SITE_DATA = {
       </div>
     </div>
 
-    <div class="giveaway-stats reveal" id="giveawayStats"></div>
   </div>
 </section>
 
@@ -1700,7 +1739,7 @@ window.SITE_DATA = {
   <div class="container">
     <div class="foot-top">
       <div class="foot-cta-title">¿Listo para<br>competir?</div>
-      <a href="registro.html" target="_blank" rel="noopener" class="btn btn-primary">Registrar mi equipo</a>
+      <a href="#registro" class="btn btn-primary js-open-registro">Registrar mi equipo</a>
     </div>
     <div class="foot-cols" id="footCols"></div>
     <div class="foot-bottom">
@@ -2050,6 +2089,215 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
   });
 
+  /* ---------- Registro: wizard de 6 pasos (pop-up) ---------- */
+  const registroModal = document.getElementById('registroModal');
+  const registroModalClose = document.getElementById('registroModalClose');
+
+  function openRegistroModal(){
+    registroModal.classList.add('open');
+    registroModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (window.lucide) lucide.createIcons();
+  }
+  function closeRegistroModal(){
+    registroModal.classList.remove('open');
+    registroModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  registroModalClose.addEventListener('click', closeRegistroModal);
+  registroModal.addEventListener('click', e => { if (e.target === registroModal) closeRegistroModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRegistroModal(); });
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest('.js-open-registro');
+    if (!trigger) return;
+    e.preventDefault();
+    openRegistroModal();
+    navDrawer.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', false);
+    navToggle.innerHTML = '<i data-lucide="menu"></i>';
+    if (window.lucide) lucide.createIcons();
+  });
+
+  const REG_STEPS = [
+    { key:'team', title:'Información del Equipo', fields:[
+      {name:'teamName', label:'Nombre del Equipo', type:'text', required:true},
+      {name:'teamLogo', label:'Logo del Equipo', type:'file', required:false},
+      {name:'country', label:'País', type:'text', required:true},
+      {name:'state', label:'Estado', type:'text', required:true},
+      {name:'city', label:'Ciudad', type:'text', required:true},
+      {name:'instagram', label:'Instagram', type:'text', required:false},
+      {name:'tiktok', label:'TikTok', type:'text', required:false},
+      {name:'facebook', label:'Facebook', type:'text', required:false},
+      {name:'teamDiscord', label:'Discord', type:'text', required:true},
+      {name:'twitch', label:'Canal Twitch', type:'text', required:false},
+      {name:'kick', label:'Canal Kick', type:'text', required:false},
+      {name:'youtube', label:'Canal YouTube', type:'text', required:false}
+    ]},
+    { key:'captain', title:'Capitán', fields:[
+      {name:'capName', label:'Nombre', type:'text', required:true},
+      {name:'capLastName', label:'Apellido', type:'text', required:true},
+      {name:'capNick', label:'Nickname', type:'text', required:true},
+      {name:'capEmail', label:'Correo', type:'email', required:true},
+      {name:'capWhatsapp', label:'WhatsApp', type:'tel', required:true},
+      {name:'capDiscord', label:'Discord', type:'text', required:true},
+      {name:'capBSId', label:'Blood Strike ID', type:'text', required:true},
+      {name:'capUID', label:'UID', type:'text', required:true}
+    ]},
+    { key:'players', title:'Jugadores', repeat:3, playerFields:[
+      {name:'name', label:'Nombre', type:'text', required:true},
+      {name:'nick', label:'Nickname', type:'text', required:true},
+      {name:'discord', label:'Discord', type:'text', required:true},
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:true},
+      {name:'uid', label:'UID', type:'text', required:true}
+    ]},
+    { key:'substitute', title:'Jugador Suplente (opcional)', optional:true, playerFields:[
+      {name:'name', label:'Nombre', type:'text', required:false},
+      {name:'nick', label:'Nickname', type:'text', required:false},
+      {name:'discord', label:'Discord', type:'text', required:false},
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:false},
+      {name:'uid', label:'UID', type:'text', required:false}
+    ]},
+    { key:'payment', title:'Pago', fields:[
+      {name:'txnId', label:'Número de Transacción', type:'text', required:true},
+      {name:'paymentProof', label:'Captura del Pago', type:'file', required:true}
+    ]},
+    { key:'rules', title:'Aceptar Reglamento' }
+  ];
+
+  function regFieldHTML(f, id){
+    if (f.type === 'file'){
+      return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="file" id="${id}" name="${id}" accept="image/*" ${f.required?'data-required':''}></div>`;
+    }
+    return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="${f.type}" id="${id}" name="${id}" placeholder="${f.label}" ${f.required?'data-required':''}></div>`;
+  }
+
+  const regStepsBody = document.getElementById('regStepsBody');
+  const regStepsNav = document.getElementById('regStepsNav');
+
+  REG_STEPS.forEach((step, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'reg-step-pill' + (i === 0 ? ' active' : '');
+    pill.innerHTML = `<span class="num">${i+1}</span><span>${step.title}</span>`;
+    regStepsNav.appendChild(pill);
+
+    const stepEl = document.createElement('div');
+    stepEl.className = 'reg-step' + (i === 0 ? ' active' : '');
+    stepEl.dataset.step = i;
+    let inner = `<div class="reg-step-title">${String(i+1).padStart(2,'0')} — ${step.title}</div>`;
+
+    if (step.key === 'payment'){
+      const per = D.registration.pricePerPlayer;
+      inner += `<div class="price-box">
+        <div><b>$${per} ${D.registration.currency}</b><span>Por jugador</span></div>
+        <div><b>$${per*4} ${D.registration.currency}</b><span>Total del equipo (4 jugadores)</span></div>
+      </div>`;
+      inner += `<div class="field-grid">${step.fields.map(f => regFieldHTML(f, f.name)).join('')}</div>`;
+    } else if (step.key === 'rules'){
+      inner += `<p style="color:#cfcfcf;font-size:13.5px;margin-bottom:16px;line-height:1.6">Antes de continuar, lee el reglamento oficial completo de KRONIX ESPORTS.</p>`;
+      inner += `<div class="btn-row" style="margin-bottom:20px"><button type="button" class="btn btn-ghost js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver reglamento completo</button></div>`;
+      inner += `<label class="rules-accept"><input type="checkbox" id="acceptRules"><span>He leído y acepto el reglamento oficial de KRONIX ESPORTS.</span></label>`;
+    } else if (step.repeat){
+      let blocks = '';
+      for (let p = 1; p <= step.repeat; p++){
+        blocks += `<div class="player-block"><div class="player-block-title">Jugador ${p}</div><div class="field-grid">${step.playerFields.map(f => regFieldHTML(f, `player${p}_${f.name}`)).join('')}</div></div>`;
+      }
+      inner += blocks;
+    } else if (step.optional){
+      inner += `<label class="toggle-row"><input type="checkbox" id="subToggle"><span>¿Tu equipo llevará un jugador suplente?</span></label>`;
+      inner += `<div class="sub-fields" id="subFields" hidden><div class="field-grid">${step.playerFields.map(f => regFieldHTML(f, `sub_${f.name}`)).join('')}</div></div>`;
+    } else {
+      inner += `<div class="field-grid">${step.fields.map(f => regFieldHTML(f, f.name)).join('')}</div>`;
+    }
+
+    stepEl.innerHTML = inner;
+    regStepsBody.appendChild(stepEl);
+  });
+
+  const subToggle = document.getElementById('subToggle');
+  const subFields = document.getElementById('subFields');
+  if (subToggle){
+    subToggle.addEventListener('change', () => {
+      subFields.hidden = !subToggle.checked;
+      subFields.querySelectorAll('input').forEach(inp => {
+        if (subToggle.checked) inp.setAttribute('data-required', ''); else inp.removeAttribute('data-required');
+      });
+    });
+  }
+
+  let regIndex = 0;
+  const regStepEls = Array.from(document.querySelectorAll('.reg-step'));
+  const regPillEls = Array.from(document.querySelectorAll('.reg-step-pill'));
+  const regPrev = document.getElementById('regPrev');
+  const regNext = document.getElementById('regNext');
+  const regSubmit = document.getElementById('regSubmit');
+  const regWizardPanel = registroModal.querySelector('.modal-panel');
+
+  function showRegStep(i){
+    regStepEls.forEach((el, idx) => el.classList.toggle('active', idx === i));
+    regPillEls.forEach((el, idx) => {
+      el.classList.toggle('active', idx === i);
+      el.classList.toggle('done', idx < i);
+    });
+    regPrev.disabled = i === 0;
+    regNext.hidden = i === regStepEls.length - 1;
+    regSubmit.hidden = i !== regStepEls.length - 1;
+    regWizardPanel.scrollTop = 0;
+  }
+
+  function validateRegStep(stepEl){
+    let ok = true;
+    stepEl.querySelectorAll('[data-required]').forEach(inp => {
+      if (inp.closest('[hidden]')) return;
+      const valid = inp.type === 'file' ? inp.files.length > 0 : inp.value.trim() !== '';
+      inp.classList.toggle('invalid', !valid);
+      if (!valid) ok = false;
+    });
+    const cb = stepEl.querySelector('#acceptRules');
+    if (cb){
+      const box = cb.closest('.rules-accept');
+      box.classList.toggle('invalid', !cb.checked);
+      if (!cb.checked) ok = false;
+    }
+    return ok;
+  }
+
+  regNext.addEventListener('click', () => {
+    if (!validateRegStep(regStepEls[regIndex])) return;
+    regIndex = Math.min(regIndex + 1, regStepEls.length - 1);
+    showRegStep(regIndex);
+  });
+  regPrev.addEventListener('click', () => {
+    regIndex = Math.max(regIndex - 1, 0);
+    showRegStep(regIndex);
+  });
+
+  document.getElementById('regForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!validateRegStep(regStepEls[regIndex])) return;
+
+    const folio = 'KX-2026-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+    const teamNameEl = document.getElementById('teamName');
+    const capEmailEl = document.getElementById('capEmail');
+    const teamName = teamNameEl ? teamNameEl.value : '';
+    const capEmail = capEmailEl ? capEmailEl.value : '';
+
+    document.getElementById('regFolio').textContent = folio;
+    document.getElementById('regNotifyEmail').textContent = D.registration.notifyEmail;
+
+    const subject = encodeURIComponent(`Nueva inscripción — ${teamName || 'Equipo'} (${folio})`);
+    const body = encodeURIComponent(
+      `Folio: ${folio}\nEquipo: ${teamName}\nCorreo del capitán: ${capEmail}\n\n(Generado desde el formulario de registro de KRONIX ESPORTS.)`
+    );
+    document.getElementById('regMailBtn').href = `mailto:${D.registration.notifyEmail}?subject=${subject}&body=${body}`;
+
+    document.getElementById('regForm').hidden = true;
+    document.getElementById('regStepsNav').hidden = true;
+    document.getElementById('regSuccess').hidden = false;
+    if (window.lucide) lucide.createIcons();
+  });
+
+  showRegStep(0);
+
   /* ---------- Llave de eliminación horizontal (bracket profesional) ---------- */
   (function initEliminationBracket(){
     // aplanar todas las partidas por id y propagar ganadores a la siguiente ronda
@@ -2212,13 +2460,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('giveawaySpecs').innerHTML = D.giveaway.prizeSpecs.map(s => `<span class="giveaway-spec">${s}</span>`).join('');
   document.getElementById('giveawayParticipateBtn').href = D.giveaway.participateUrl;
 
-  const gstats = [
-    { value: D.giveaway.statParticipants, label: 'Participantes' },
-    { value: '—', label: 'Ganador' },
-    { value: D.giveaway.drawDate, label: 'Fecha del Sorteo' }
-  ];
-  document.getElementById('giveawayStats').innerHTML = gstats.map(s => `<div class="gstat"><b>${s.value}</b><span>${s.label}</span></div>`).join('');
-
   /* ---------- Sponsors (imagen clicable → link del CSV) ---------- */
   const sponsorsRow = document.getElementById('sponsorsRow');
   D.sponsors.forEach(s => {
@@ -2270,7 +2511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.className = 'foot-col';
     el.innerHTML = `<div class="foot-col-title">${col}</div>` + links.map(([label, href]) => {
       const ext = href.endsWith('.html') ? ' target="_blank" rel="noopener"' : '';
-      const cls = label === 'Reglamento' ? ' class="js-open-reglamento"' : '';
+      const cls = label === 'Reglamento' ? ' class="js-open-reglamento"' : (label === 'Registro' ? ' class="js-open-registro"' : '');
       return `<a href="${href}"${ext}${cls}>${label}</a>`;
     }).join('');
     footCols.appendChild(el);
