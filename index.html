@@ -842,6 +842,11 @@ input[type=text],input[type=email],input[type=tel],input[type=file]{
 }
 input:focus{outline:none;border-color:var(--primary)}
 input.invalid{border-color:#ff5252}
+.field-error{
+  display:none;font-family:var(--f-mono);font-size:10.5px;
+  color:#ff5252;letter-spacing:.04em;margin-top:5px;
+}
+.field-error.show{display:block}
 input[type=file]{padding:10px;font-size:11.5px;color:var(--gray)}
 .field-group{margin-bottom:16px}
 .field-grid{display:grid;grid-template-columns:1fr;gap:0 16px}
@@ -978,9 +983,17 @@ input[type=file]{padding:10px;font-size:11.5px;color:var(--gray)}
 /* ============================================================
    STEPS (cómo participar)
    ============================================================ */
-.steps{display:flex;flex-direction:column;gap:14px}
+.steps{
+  display:flex;flex-direction:row;flex-wrap:nowrap;
+  gap:14px;width:100%;
+  overflow-x:auto;
+  padding:4px 4px 14px;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+}
 .step{
   display:flex;gap:16px;align-items:flex-start;
+  flex:0 0 260px;scroll-snap-align:start;
   padding:20px;
   background:var(--panel);
   border:1px solid var(--line);
@@ -1141,8 +1154,6 @@ footer{
   .nav-cta{display:inline-flex}
   .nav-toggle{display:none}
   .sponsors-row{grid-template-columns:repeat(4,1fr)}
-  .steps{flex-direction:row}
-  .step{flex:1;flex-direction:column}
   .foot-cols{grid-template-columns:repeat(3,1fr)}
   .foot-top{flex-direction:row;align-items:center;justify-content:space-between}
   .foot-bottom{flex-direction:row;align-items:center;justify-content:space-between}
@@ -2151,19 +2162,19 @@ document.addEventListener('DOMContentLoaded', () => {
       {name:'capEmail', label:'Correo', type:'email', required:true},
       {name:'capWhatsapp', label:'WhatsApp', type:'tel', required:true},
       {name:'capDiscord', label:'Discord', type:'text', required:true},
-      {name:'capBSId', label:'Blood Strike ID', type:'text', required:true}
+      {name:'capBSId', label:'Blood Strike ID', type:'text', required:true, numeric:true}
     ]},
     { key:'players', title:'Jugadores', repeat:3, playerFields:[
       {name:'name', label:'Nombre', type:'text', required:true},
       {name:'nick', label:'Nickname', type:'text', required:true},
       {name:'discord', label:'Discord', type:'text', required:true},
-      {name:'bsId', label:'Blood Strike ID', type:'text', required:true}
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:true, numeric:true}
     ]},
     { key:'substitute', title:'Jugador Suplente (opcional)', optional:true, playerFields:[
       {name:'name', label:'Nombre', type:'text', required:false},
       {name:'nick', label:'Nickname', type:'text', required:false},
       {name:'discord', label:'Discord', type:'text', required:false},
-      {name:'bsId', label:'Blood Strike ID', type:'text', required:false}
+      {name:'bsId', label:'Blood Strike ID', type:'text', required:false, numeric:true}
     ]},
     { key:'rules', title:'Aceptar Reglamento' },
     { key:'confirm', title:'Enviar Inscripción' }
@@ -2173,7 +2184,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (f.type === 'file'){
       return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="file" id="${id}" name="${id}" accept="image/*" ${f.required?'data-required':''}></div>`;
     }
-    return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="${f.type}" id="${id}" name="${id}" placeholder="${f.label}" ${f.required?'data-required':''}></div>`;
+    const numAttrs = f.numeric ? `inputmode="numeric" pattern="[0-9]*" data-numeric` : '';
+    const errSpan = f.numeric ? `<span class="field-error" id="err_${id}"></span>` : '';
+    return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="${f.type}" id="${id}" name="${id}" placeholder="${f.label}" ${f.required?'data-required':''} ${numAttrs}>${errSpan}</div>`;
   }
 
   const regStepsBody = document.getElementById('regStepsBody');
@@ -2218,6 +2231,19 @@ document.addEventListener('DOMContentLoaded', () => {
     regStepsBody.appendChild(stepEl);
   });
 
+  // validación en tiempo real: Blood Strike ID solo acepta números
+  document.querySelectorAll('[data-numeric]').forEach(inp => {
+    const err = document.getElementById('err_' + inp.id);
+    inp.addEventListener('input', () => {
+      const hasLetters = inp.value !== '' && !/^[0-9]*$/.test(inp.value);
+      inp.classList.toggle('invalid', hasLetters);
+      if (err){
+        err.textContent = hasLetters ? 'Inválido' : '';
+        err.classList.toggle('show', hasLetters);
+      }
+    });
+  });
+
   const subToggle = document.getElementById('subToggle');
   const subFields = document.getElementById('subFields');
   if (subToggle){
@@ -2256,6 +2282,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const valid = inp.type === 'file' ? inp.files.length > 0 : inp.value.trim() !== '';
       inp.classList.toggle('invalid', !valid);
       if (!valid) ok = false;
+    });
+    stepEl.querySelectorAll('[data-numeric]').forEach(inp => {
+      if (inp.closest('[hidden]')) return;
+      const hasLetters = inp.value !== '' && !/^[0-9]*$/.test(inp.value);
+      const err = document.getElementById('err_' + inp.id);
+      inp.classList.toggle('invalid', hasLetters);
+      if (err){
+        err.textContent = hasLetters ? 'Inválido' : '';
+        err.classList.toggle('show', hasLetters);
+      }
+      if (hasLetters) ok = false;
     });
     const cb = stepEl.querySelector('#acceptRules');
     if (cb){
