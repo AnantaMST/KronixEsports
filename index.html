@@ -877,6 +877,15 @@ input[type=file]{padding:10px;font-size:11.5px;color:var(--gray)}
   color:var(--primary);letter-spacing:.02em;margin:14px 0 18px;
   text-shadow:0 0 30px var(--primary-glow);
 }
+.reg-success-headline{
+  font-family:var(--f-display);font-size:clamp(22px,5.5vw,30px);
+  text-transform:uppercase;letter-spacing:.01em;color:var(--text);
+  margin-bottom:12px;
+}
+.reg-success-sub{
+  color:var(--gray);font-size:14px;line-height:1.7;
+  max-width:380px;margin:0 auto 26px;
+}
 
 /* ============================================================
    COMMUNITY GIVEAWAY / concurso de redes sociales
@@ -1340,6 +1349,7 @@ window.SITE_DATA = {
   // hoja: registration_config  [campo, valor] — a dónde llega la notificación de cada inscripción
   registration: {
     notifyEmail: "torneo@kronixesports.com", // editable: correo que recibe cada inscripción
+    whatsappNumber: "584220417220", // editable: número de WhatsApp (formato internacional, sin +) que recibe cada inscripción
     pricePerPlayer: 10,
     currency: "USD"
   },
@@ -1635,9 +1645,10 @@ window.SITE_DATA = {
         <i data-lucide="check-circle-2" style="width:40px;height:40px;color:var(--primary)"></i>
         <div class="eyebrow" style="justify-content:center;margin-top:16px">Inscripción recibida</div>
         <div class="folio" id="regFolio"></div>
-        <p class="section-sub" style="margin:0 auto 22px">Guarda este folio. Uno de los miembros de nuestro equipo se pondrá en contacto contigo para validar tus datos y completar tu inscripción.</p>
+        <div class="reg-success-headline">Finaliza tu registro en WhatsApp</div>
+        <p class="reg-success-sub">Tu registro finalizará cuando te pongas en contacto con un miembro de nuestro equipo. ¡Escríbenos por WhatsApp ahora mismo!</p>
         <div class="btn-row" style="justify-content:center">
-          <a href="#" id="regMailBtn" class="btn btn-primary"><i data-lucide="mail" style="width:16px;height:16px"></i> Confirmar envío por correo</a>
+          <a href="#" id="regWhatsappBtn" target="_blank" rel="noopener" class="btn btn-primary"><i data-lucide="message-circle" style="width:16px;height:16px"></i> Escríbenos por WhatsApp</a>
         </div>
       </div>
     </div>
@@ -2276,17 +2287,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('regFolio').textContent = folio;
 
-    const subject = encodeURIComponent(`Nueva inscripción — ${teamName || 'Equipo'} (${folio})`);
-    const body = encodeURIComponent(
-      `Folio: ${folio}\n\n` +
-      `EQUIPO\nNombre: ${teamName}\nPaís: ${val('country')}\nEstado: ${val('state')}\nCiudad: ${val('city')}\nDiscord: ${val('teamDiscord')}\n\n` +
-      `CAPITÁN\nNombre: ${val('capName')} ${val('capLastName')}\nNickname: ${val('capNick')}\nCorreo: ${capEmail}\nWhatsApp: ${val('capWhatsapp')}\nDiscord: ${val('capDiscord')}\nBlood Strike ID: ${val('capBSId')}\n\n` +
-      `JUGADOR 1: ${val('player1_name')} (${val('player1_nick')}) — Discord: ${val('player1_discord')} — BS ID: ${val('player1_bsId')}\n` +
-      `JUGADOR 2: ${val('player2_name')} (${val('player2_nick')}) — Discord: ${val('player2_discord')} — BS ID: ${val('player2_bsId')}\n` +
-      `JUGADOR 3: ${val('player3_name')} (${val('player3_nick')}) — Discord: ${val('player3_discord')} — BS ID: ${val('player3_bsId')}\n\n` +
-      `(Generado desde el formulario de registro de KRONIX ESPORTS. Los archivos adjuntos — logo y captura de pago — no se incluyen en este correo; pídelos directamente al capitán.)`
-    );
-    document.getElementById('regMailBtn').href = `mailto:${D.registration.notifyEmail}?subject=${subject}&body=${body}`;
+    const waMessage =
+      `¡Hola KRONIX ESPORTS! 👋 Quiero finalizar mi registro.\n\n` +
+      `📋 *Folio:* ${folio}\n\n` +
+      `🛡️ *EQUIPO*\nNombre: ${teamName}\nPaís: ${val('country')}\nEstado: ${val('state')}\nCiudad: ${val('city')}\nDiscord: ${val('teamDiscord')}\n\n` +
+      `👑 *CAPITÁN*\nNombre: ${val('capName')} ${val('capLastName')}\nNickname: ${val('capNick')}\nCorreo: ${capEmail}\nWhatsApp: ${val('capWhatsapp')}\nDiscord: ${val('capDiscord')}\nBlood Strike ID: ${val('capBSId')}\n\n` +
+      `🎮 *JUGADORES*\n1. ${val('player1_name')} (${val('player1_nick')}) — Discord: ${val('player1_discord')} — BS ID: ${val('player1_bsId')}\n` +
+      `2. ${val('player2_name')} (${val('player2_nick')}) — Discord: ${val('player2_discord')} — BS ID: ${val('player2_bsId')}\n` +
+      `3. ${val('player3_name')} (${val('player3_nick')}) — Discord: ${val('player3_discord')} — BS ID: ${val('player3_bsId')}\n\n` +
+      `(Logo del equipo: se envía por este chat)`;
+    document.getElementById('regWhatsappBtn').href = `https://wa.me/${D.registration.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
     document.getElementById('regForm').hidden = true;
     document.getElementById('regStepsNav').hidden = true;
