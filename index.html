@@ -140,8 +140,40 @@ ul{list-style:none}
 /* ============================================================
    NAV
    ============================================================ */
+/* ============================================================
+   TICKER — cinta deslizante de cuenta regresiva
+   ============================================================ */
+.ticker{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:34px;
+  background:var(--primary);
+  overflow:hidden;
+  display:flex;align-items:center;
+  cursor:pointer;
+}
+.ticker-track{
+  display:inline-flex;white-space:nowrap;
+  animation:tickerScroll 26s linear infinite;
+  will-change:transform;
+}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tickerScroll{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--f-mono);font-weight:700;font-size:11.5px;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:#050505;
+  padding:0 18px;
+  flex-shrink:0;
+}
+.ticker-item b{font-weight:800}
+.ticker-sep{opacity:.55}
+
 .nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
+  position:fixed;top:34px;left:0;right:0;z-index:100;
   background:rgba(5,5,5,.75);
   backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
@@ -176,7 +208,7 @@ ul{list-style:none}
   color:var(--text);
 }
 .nav-drawer{
-  position:fixed;inset:64px 0 0 0;z-index:150;
+  position:fixed;inset:98px 0 0 0;z-index:150;
   background:#050505;
   background-color:#050505;
   opacity:1;
@@ -208,7 +240,7 @@ ul{list-style:none}
   display:flex;
   flex-direction:column;
   justify-content:center;
-  padding:110px 0 60px;
+  padding:144px 0 60px;
   overflow:hidden;
 }
 .hero-bg{
@@ -1480,6 +1512,11 @@ window.SITE_DATA = {
 };
 </script>
 
+<!-- TICKER — cuenta regresiva en cinta deslizante -->
+<div class="ticker js-open-registro" id="ticker" role="button" tabindex="0" aria-label="Ver cuenta regresiva y registrarse">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
 <!-- NAV -->
 <header class="nav">
   <div class="container nav-inner">
@@ -1530,12 +1567,6 @@ window.SITE_DATA = {
       <a href="#reglamento" class="btn btn-ghost js-open-reglamento"><i data-lucide="scroll-text" style="width:16px;height:16px"></i> Ver Reglamento</a>
     </div>
 
-    <div class="countdown" id="countdown" aria-live="polite">
-      <div class="cd-box"><div class="cd-num" id="cdDays">00</div><div class="cd-label">Días</div></div>
-      <div class="cd-box"><div class="cd-num" id="cdHours">00</div><div class="cd-label">Horas</div></div>
-      <div class="cd-box"><div class="cd-num" id="cdMin">00</div><div class="cd-label">Min</div></div>
-      <div class="cd-box"><div class="cd-num" id="cdSec">00</div><div class="cd-label">Seg</div></div>
-    </div>
     <div class="hero-dates" id="heroDates"></div>
   </div>
 </section>
@@ -1833,6 +1864,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Countdown ---------- */
   const target = new Date(D.hero.targetDate).getTime();
+  /* ---------- Ticker: cinta deslizante de cuenta regresiva ---------- */
+  const tickerTrack = document.getElementById('tickerTrack');
+  document.getElementById('ticker').addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.target.click(); }
+  });
+  const tickerUnit =
+    `<span class="ticker-item">🔥 KRONIX ESPORTS <span class="ticker-sep">·</span> FALTAN <b class="tk-d">00</b>D <b class="tk-h">00</b>H <b class="tk-m">00</b>M <b class="tk-s">00</b>S <span class="ticker-sep">·</span> ${D.hero.eventDates.toUpperCase()} <span class="ticker-sep">·</span> REGÍSTRATE AHORA</span>`;
+  // se repite varias veces y luego se duplica completo para que el loop de -50% sea perfecto
+  const tickerHalf = tickerUnit.repeat(8);
+  tickerTrack.innerHTML = tickerHalf + tickerHalf;
+
   function tickCountdown(){
     const now = Date.now();
     let diff = Math.max(0, target - now);
@@ -1841,10 +1883,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
     const pad = n => String(n).padStart(2,'0');
-    document.getElementById('cdDays').textContent = pad(d);
-    document.getElementById('cdHours').textContent = pad(h);
-    document.getElementById('cdMin').textContent = pad(m);
-    document.getElementById('cdSec').textContent = pad(s);
+    document.querySelectorAll('.tk-d').forEach(el => el.textContent = pad(d));
+    document.querySelectorAll('.tk-h').forEach(el => el.textContent = pad(h));
+    document.querySelectorAll('.tk-m').forEach(el => el.textContent = pad(m));
+    document.querySelectorAll('.tk-s').forEach(el => el.textContent = pad(s));
   }
   tickCountdown();
   setInterval(tickCountdown, 1000);
