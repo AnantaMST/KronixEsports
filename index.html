@@ -186,7 +186,13 @@ ul{list-style:none}
   font-family:var(--f-display);
   font-size:22px;
   letter-spacing:.02em;
-  display:flex;align-items:baseline;gap:8px;
+  display:flex;align-items:center;gap:9px;
+}
+.logo-mark{
+  height:36px;width:36px;
+  object-fit:cover;
+  border-radius:6px;
+  flex-shrink:0;
 }
 .logo span{color:var(--primary)}
 .logo small{font-family:var(--f-mono);font-size:10px;color:var(--gray);letter-spacing:.15em}
@@ -1520,7 +1526,7 @@ window.SITE_DATA = {
 <!-- NAV -->
 <header class="nav">
   <div class="container nav-inner">
-    <a href="#" class="logo"><span>KX</span>ESPORTS<small>&nbsp;S01</small></a>
+    <a href="#" class="logo"><img src="https://i.imgur.com/a0EarS5.jpeg" alt="Kronix Esports" class="logo-mark">KRONIX<small>&nbsp;S01</small></a>
     <nav class="nav-links">
       <a href="#torneo">Torneo</a>
       <a href="#cronograma">Cronograma</a>
@@ -1583,7 +1589,7 @@ window.SITE_DATA = {
   <div class="container">
     <div class="prize hud reveal">
       <span class="hud-tr"></span><span class="hud-bl"></span>
-      <div class="banner-1200" style="margin-bottom:22px"><img src="https://i.imgur.com/ycbQ0yp.png" alt="Premio garantizado 400 USD"></div>
+      <div class="banner-1200" style="margin-bottom:22px"><img src="https://i.imgur.com/XFiqhYJ.png" alt="Premio garantizado 400 USD"></div>
       <div class="prize-copy">
         <div class="prize-headline">🏆 Gana <span class="amt">$400 USD</span> y deja tu huella</div>
         <p>No se trata solo del premio. Se trata de demostrar que tu equipo puede enfrentarse a los mejores y convertirse en el primer campeón de <b>KRONIX Season 1</b>.</p>
@@ -2226,9 +2232,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (f.type === 'file'){
       return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="file" id="${id}" name="${id}" accept="image/*" ${f.required?'data-required':''}></div>`;
     }
-    const numAttrs = f.numeric ? `inputmode="numeric" pattern="[0-9]*" data-numeric` : '';
+    const numAttrs = f.numeric ? `inputmode="numeric" pattern="[0-9]*" maxlength="12" data-numeric` : '';
     const errSpan = f.numeric ? `<span class="field-error" id="err_${id}"></span>` : '';
-    return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="${f.type}" id="${id}" name="${id}" placeholder="${f.label}" ${f.required?'data-required':''} ${numAttrs}>${errSpan}</div>`;
+    const placeholder = f.numeric ? '12 dígitos numéricos' : f.label;
+    return `<div class="field-group"><label for="${id}">${f.label}${f.required?' *':''}</label><input type="${f.type}" id="${id}" name="${id}" placeholder="${placeholder}" ${f.required?'data-required':''} ${numAttrs}>${errSpan}</div>`;
   }
 
   const regStepsBody = document.getElementById('regStepsBody');
@@ -2273,17 +2280,20 @@ document.addEventListener('DOMContentLoaded', () => {
     regStepsBody.appendChild(stepEl);
   });
 
-  // validación en tiempo real: Blood Strike ID solo acepta números
-  document.querySelectorAll('[data-numeric]').forEach(inp => {
+  // validación en tiempo real: Blood Strike ID debe ser exactamente 12 dígitos numéricos
+  function checkNumericField(inp){
     const err = document.getElementById('err_' + inp.id);
-    inp.addEventListener('input', () => {
-      const hasLetters = inp.value !== '' && !/^[0-9]*$/.test(inp.value);
-      inp.classList.toggle('invalid', hasLetters);
-      if (err){
-        err.textContent = hasLetters ? 'Inválido' : '';
-        err.classList.toggle('show', hasLetters);
-      }
-    });
+    const v = inp.value;
+    const invalid = v !== '' && (!/^[0-9]*$/.test(v) || v.length !== 12);
+    inp.classList.toggle('invalid', invalid);
+    if (err){
+      err.textContent = invalid ? 'Inválido — deben ser 12 dígitos numéricos' : '';
+      err.classList.toggle('show', invalid);
+    }
+    return invalid;
+  }
+  document.querySelectorAll('[data-numeric]').forEach(inp => {
+    inp.addEventListener('input', () => checkNumericField(inp));
   });
 
   const subToggle = document.getElementById('subToggle');
@@ -2327,14 +2337,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     stepEl.querySelectorAll('[data-numeric]').forEach(inp => {
       if (inp.closest('[hidden]')) return;
-      const hasLetters = inp.value !== '' && !/^[0-9]*$/.test(inp.value);
-      const err = document.getElementById('err_' + inp.id);
-      inp.classList.toggle('invalid', hasLetters);
-      if (err){
-        err.textContent = hasLetters ? 'Inválido' : '';
-        err.classList.toggle('show', hasLetters);
-      }
-      if (hasLetters) ok = false;
+      if (checkNumericField(inp)) ok = false;
     });
     const cb = stepEl.querySelector('#acceptRules');
     if (cb){
@@ -2366,15 +2369,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('regFolio').textContent = folio;
 
+    const SEP = '-----------------------------------';
+    const players = [1, 2, 3].map(n =>
+      `${n}. *${val('player' + n + '_name')}*\nNick: *${val('player' + n + '_nick')}*\nBS ID: *${val('player' + n + '_bsId')}*`
+    ).join('\n');
+
     const waMessage =
-      `¡Hola KRONIX ESPORTS! 👋 Quiero finalizar mi registro.\n\n` +
-      `📋 *Folio:* ${folio}\n\n` +
-      `🛡️ *EQUIPO*\nNombre: ${teamName}\nPaís: ${val('country')}\nEstado: ${val('state')}\nCiudad: ${val('city')}\nDiscord: ${val('teamDiscord')}\n\n` +
-      `👑 *CAPITÁN*\nNombre: ${val('capName')} ${val('capLastName')}\nNickname: ${val('capNick')}\nCorreo: ${capEmail}\nWhatsApp: ${val('capWhatsapp')}\nDiscord: ${val('capDiscord')}\nBlood Strike ID: ${val('capBSId')}\n\n` +
-      `🎮 *JUGADORES*\n1. ${val('player1_name')} (${val('player1_nick')}) — Discord: ${val('player1_discord')} — BS ID: ${val('player1_bsId')}\n` +
-      `2. ${val('player2_name')} (${val('player2_nick')}) — Discord: ${val('player2_discord')} — BS ID: ${val('player2_bsId')}\n` +
-      `3. ${val('player3_name')} (${val('player3_nick')}) — Discord: ${val('player3_discord')} — BS ID: ${val('player3_bsId')}\n\n` +
-      `(Logo del equipo: se envía por este chat)`;
+      `🎮 NUEVA INSCRIPCIÓN | KRONIX ESPORTS\n${SEP}\n` +
+      `Folio: ${folio}\n${SEP}\n` +
+      `👥 EQUIPO\n${SEP}\n` +
+      `${teamName}\n${val('state')}, ${val('city')}, ${val('country')}\nDiscord: *${val('teamDiscord')}*\n${SEP}\n` +
+      `*CAPITÁN*\n${SEP}\n` +
+      `${val('capNick')} (${val('capName')} ${val('capLastName')})\n${capEmail}\n${val('capWhatsapp')}\nBS ID: *${val('capBSId')}*\n${SEP}\n` +
+      `👥 *JUGADORES*\n${SEP}\n` +
+      `${players}\n${SEP}\n` +
+      `Logo del equipo: *Adjuntado*\n${SEP}\n` +
+      `Estado: *Pendiente de validación*`;
     document.getElementById('regWhatsappBtn').href = `https://wa.me/${D.registration.whatsappNumber}?text=${encodeURIComponent(waMessage)}`;
 
     document.getElementById('regForm').hidden = true;
