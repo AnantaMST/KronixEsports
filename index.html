@@ -73,6 +73,12 @@ body{
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
+#bgNetwork{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  z-index:-1;
+  pointer-events:none;
+}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
@@ -490,7 +496,7 @@ ul{list-style:none}
 .conv-text b{color:var(--round-accent, var(--primary))}
 
 /* grupos (Fase de Grupos) */
-.group-grid{
+.teams-carousel{
   display:flex;flex-direction:row;flex-wrap:nowrap;
   gap:14px;width:100%;
   overflow-x:auto;
@@ -498,31 +504,59 @@ ul{list-style:none}
   scroll-snap-type:x proximity;
   -webkit-overflow-scrolling:touch;
 }
-.group-box{
-  flex:0 0 230px;scroll-snap-align:start;
+.team-box{
+  flex:0 0 190px;scroll-snap-align:start;
   background:var(--bg);border:1px solid var(--line);
-  border-left:3px solid var(--round-accent, var(--primary));
-  padding:14px 16px;
+  border-top:3px solid var(--round-accent, var(--primary));
+  overflow:hidden;
   transition:border-color .2s ease;
 }
-.group-box-head{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  cursor:pointer;
+.team-box.open{border-color:var(--round-accent, var(--primary))}
+.team-box-img{
+  width:100%;aspect-ratio:1/1;
+  background:var(--panel);
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
 }
-.group-box-title{font-family:var(--f-display);font-size:20px;color:var(--round-accent, var(--primary));text-transform:uppercase;letter-spacing:.01em}
-.group-box-sub{font-family:var(--f-mono);font-size:9px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.08em}
-.group-chevron{width:16px;height:16px;color:var(--gray-dim);flex-shrink:0;transition:transform .3s ease}
-.group-box.open .group-chevron{transform:rotate(180deg);color:var(--round-accent, var(--primary))}
-.group-team-row{
-  display:flex;flex-direction:column;gap:6px;
+.team-box-img img{width:100%;height:100%;object-fit:cover}
+.team-box-img svg{width:32px;height:32px;color:var(--gray-dim)}
+.team-box-head{cursor:pointer}
+.team-box-title-row{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:12px 14px;
+}
+.team-box-name{
+  font-family:var(--f-display);font-size:16px;text-transform:uppercase;letter-spacing:.01em;
+  color:var(--round-accent, var(--primary));flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.team-chevron{width:15px;height:15px;color:var(--gray-dim);flex-shrink:0;transition:transform .3s ease}
+.team-box.open .team-chevron{transform:rotate(180deg);color:var(--primary)}
+.team-roster{
   max-height:0;opacity:0;overflow:hidden;
-  transition:max-height .3s ease, opacity .25s ease, margin-top .3s ease;
+  padding:0 14px;
+  transition:max-height .3s ease, opacity .25s ease, padding-bottom .3s ease;
 }
-.group-box.open .group-team-row{max-height:400px;opacity:1;margin-top:12px}
-.group-team{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:7px 10px;border:1px solid var(--line);background:var(--panel-raised)}
-.group-team svg{width:12px;height:12px;color:var(--gray-dim);flex-shrink:0}
+.team-box.open .team-roster{max-height:320px;opacity:1;padding-bottom:14px}
+.team-role{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 0;border-top:1px solid var(--line);
+}
+.team-role:first-child{border-top:none}
+.role-badge{
+  font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gray-dim);display:flex;align-items:center;gap:4px;flex-shrink:0;
+}
+.role-badge svg{width:11px;height:11px}
+.role-name{
+  font-size:12.5px;color:var(--text);text-align:right;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.team-role.captain .role-badge{color:var(--primary);font-weight:700}
+.team-role.captain .role-name{color:var(--primary);font-weight:700}
+.team-role.sub .role-badge{color:var(--gray)}
 @media (max-width:380px){
-  .group-box{flex:0 0 84vw}
+  .team-box{flex:0 0 78vw}
 }
 
 @keyframes treePulse{
@@ -1260,6 +1294,8 @@ footer{
 </head>
 <body>
 
+<canvas id="bgNetwork" aria-hidden="true"></canvas>
+
 <!-- ============================================================
      FUENTE DE DATOS — pensada para pasar a CSV/JSON más adelante.
      Cada bloque corresponde a lo que sería una hoja/tabla en el CSV
@@ -1291,26 +1327,28 @@ window.SITE_DATA = {
   // "icono" es un nombre de icono de lucide.dev (ej: users, swords, trophy)
   // "roster" es la lista de equipos de esa fase — esto es lo que editarás
   // desde el CSV (columnas: fase, grupo (opcional), nombre_equipo).
+  // hoja: teams — los 37 equipos inscritos. Esto es lo que editarás desde el
+  // CSV una vez que la gente se registre (columnas: id, nombre, logo (url),
+  // capitán, jugador_1, jugador_2, jugador_3, suplente). Por ahora son
+  // placeholders generados automáticamente.
+  teams: Array.from({ length: 37 }, (_, i) => ({
+    id: i + 1,
+    name: `Equipo ${i + 1}`,
+    logo: "", // editable: URL del logo del equipo (si se deja vacío, se usa un ícono genérico)
+    captain: `Capitán ${i + 1}`,
+    players: [`Jugador ${i + 1}A`, `Jugador ${i + 1}B`, `Jugador ${i + 1}C`],
+    substitute: `Suplente ${i + 1}` // editable: dejar "" si el equipo no tiene suplente
+  })),
   phases: [
     {
       icon: "users",
       title: "Fase de Grupos",
-      teams: "37 equipos · 9 grupos",
-      detail: "8 grupos de 4 equipos y 1 grupo de 5. Los 2 mejores de cada grupo avanzan.",
+      teams: "37 equipos",
+      detail: "148 jugadores repartidos en 37 equipos de 4. Toca cada equipo para ver su alineación completa.",
       advance: "18 clasifican",
       convergeNum: "18 EQUIPOS",
       convergeLabel: "clasifican a la Fase Eliminatoria",
-      roster: [
-        { group: "Grupo A", name: "Equipo A1" }, { group: "Grupo A", name: "Equipo A2" }, { group: "Grupo A", name: "Equipo A3" }, { group: "Grupo A", name: "Equipo A4" },
-        { group: "Grupo B", name: "Equipo B1" }, { group: "Grupo B", name: "Equipo B2" }, { group: "Grupo B", name: "Equipo B3" }, { group: "Grupo B", name: "Equipo B4" },
-        { group: "Grupo C", name: "Equipo C1" }, { group: "Grupo C", name: "Equipo C2" }, { group: "Grupo C", name: "Equipo C3" }, { group: "Grupo C", name: "Equipo C4" },
-        { group: "Grupo D", name: "Equipo D1" }, { group: "Grupo D", name: "Equipo D2" }, { group: "Grupo D", name: "Equipo D3" }, { group: "Grupo D", name: "Equipo D4" },
-        { group: "Grupo E", name: "Equipo E1" }, { group: "Grupo E", name: "Equipo E2" }, { group: "Grupo E", name: "Equipo E3" }, { group: "Grupo E", name: "Equipo E4" },
-        { group: "Grupo F", name: "Equipo F1" }, { group: "Grupo F", name: "Equipo F2" }, { group: "Grupo F", name: "Equipo F3" }, { group: "Grupo F", name: "Equipo F4" },
-        { group: "Grupo G", name: "Equipo G1" }, { group: "Grupo G", name: "Equipo G2" }, { group: "Grupo G", name: "Equipo G3" }, { group: "Grupo G", name: "Equipo G4" },
-        { group: "Grupo H", name: "Equipo H1" }, { group: "Grupo H", name: "Equipo H2" }, { group: "Grupo H", name: "Equipo H3" }, { group: "Grupo H", name: "Equipo H4" },
-        { group: "Grupo I", name: "Equipo I1" }, { group: "Grupo I", name: "Equipo I2" }, { group: "Grupo I", name: "Equipo I3" }, { group: "Grupo I", name: "Equipo I4" }, { group: "Grupo I", name: "Equipo I5" }
-      ]
+      teamsList: true // esta fase se dibuja a partir de SITE_DATA.teams (más abajo)
     },
     {
       icon: "swords",
@@ -1892,6 +1930,87 @@ document.addEventListener('DOMContentLoaded', () => {
   const D = window.SITE_DATA;
   if (window.lucide) lucide.createIcons();
 
+  /* ---------- Fondo: red de puntos animada (verde, se ilumina al azar, parallax con el scroll) ---------- */
+  (function initBgNetwork(){
+    const canvas = document.getElementById('bgNetwork');
+    if (!canvas || !canvas.getContext) return;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = canvas.getContext('2d');
+    let W, H, points = [];
+
+    function hexToRgb(hex){
+      hex = hex.replace('#', '');
+      const n = parseInt(hex, 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    const primaryHex = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#44D379';
+    const [pr, pg, pb] = hexToRgb(primaryHex);
+    const DIST = 150;
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      const count = Math.max(24, Math.min(55, Math.floor((W * H) / 24000)));
+      points = Array.from({ length: count }, () => ({ x: Math.random() * W, y: Math.random() * H, glow: 0 }));
+    }
+    resize();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 200); });
+
+    if (reduceMotion){
+      // sin movimiento: se dibuja una sola vez y no se anima más
+      draw(false);
+      return;
+    }
+
+    // encender puntos al azar cada cierto tiempo
+    setInterval(() => {
+      if (!points.length) return;
+      points[Math.floor(Math.random() * points.length)].glow = 1;
+    }, 320);
+
+    function draw(loop){
+      ctx.clearRect(0, 0, W, H);
+      const scrollOffset = (window.scrollY || 0) * 0.06;
+      const pos = points.map(p => ({ x: p.x, y: ((p.y + scrollOffset) % H + H) % H, glow: p.glow }));
+
+      for (let i = 0; i < pos.length; i++){
+        for (let j = i + 1; j < pos.length; j++){
+          const dx = pos[i].x - pos[j].x, dy = pos[i].y - pos[j].y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < DIST){
+            const baseA = (1 - d / DIST) * 0.1;
+            const glowA = Math.max(pos[i].glow, pos[j].glow) * 0.3;
+            ctx.strokeStyle = `rgba(${pr},${pg},${pb},${(baseA + glowA).toFixed(3)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(pos[i].x, pos[i].y);
+            ctx.lineTo(pos[j].x, pos[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      pos.forEach((p, idx) => {
+        const glow = points[idx].glow;
+        const r = 1.8 + glow * 1.6;
+        const a = 0.18 + glow * 0.65;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${pr},${pg},${pb},${a.toFixed(3)})`;
+        ctx.fill();
+        if (loop !== false){
+          points[idx].glow *= 0.94;
+          if (points[idx].glow < 0.02) points[idx].glow = 0;
+        }
+      });
+
+      if (loop !== false) requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })();
+
   /* ---------- Hero text ---------- */
   document.getElementById('heroGame').textContent = D.hero.game;
   document.getElementById('heroSeason').textContent = D.hero.season;
@@ -2048,31 +2167,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const bracketWrap = document.getElementById('bracketPhases');
   let roundIdx = 0;
 
-  function renderGroupsRound(phase){
+  function renderTeamsRound(phase){
     const wrap = document.createElement('div');
     wrap.className = 'tree-round';
     wrap.style.setProperty('--round-accent', ROUND_COLORS[roundIdx % ROUND_COLORS.length]);
-    const groups = {};
-    const order = [];
-    phase.roster.forEach(t => {
-      if (!groups[t.group]){ groups[t.group] = []; order.push(t.group); }
-      groups[t.group].push(t.name);
-    });
     wrap.innerHTML = `
       <div class="tree-round-head">
         <span class="tree-round-badge"><i data-lucide="${phase.icon}"></i> Fase ${roundIdx + 1}</span>
         <div class="tree-round-title">${phase.title}</div>
         <div class="tree-round-sub">${phase.teams} · ${phase.detail}</div>
       </div>
-      <div class="group-grid" id="groupGrid">
-        ${order.map((g, gi) => `
-          <div class="group-box" style="--round-accent:${ROUND_COLORS[gi % ROUND_COLORS.length]}">
-            <div class="group-box-head">
-              <div><div class="group-box-title">${g}</div><div class="group-box-sub">${groups[g].length} equipos</div></div>
-              <i data-lucide="chevron-down" class="group-chevron"></i>
+      <div class="teams-carousel" id="teamGrid">
+        ${D.teams.map((team, ti) => `
+          <div class="team-box" style="--round-accent:${ROUND_COLORS[ti % ROUND_COLORS.length]}">
+            <div class="team-box-head">
+              <div class="team-box-img">
+                ${team.logo ? `<img src="${team.logo}" alt="${team.name}">` : `<i data-lucide="shield"></i>`}
+              </div>
+              <div class="team-box-title-row">
+                <div class="team-box-name">${team.name}</div>
+                <i data-lucide="chevron-down" class="team-chevron"></i>
+              </div>
             </div>
-            <div class="group-team-row">
-              ${groups[g].map(n => `<div class="group-team"><i data-lucide="users"></i>${n}</div>`).join('')}
+            <div class="team-roster">
+              <div class="team-role captain">
+                <span class="role-badge"><i data-lucide="crown"></i> Capitán</span>
+                <span class="role-name">${team.captain}</span>
+              </div>
+              ${team.players.map(p => `<div class="team-role"><span class="role-badge">Jugador</span><span class="role-name">${p}</span></div>`).join('')}
+              ${team.substitute ? `<div class="team-role sub"><span class="role-badge">Suplente</span><span class="role-name">${team.substitute}</span></div>` : ''}
             </div>
           </div>
         `).join('')}
@@ -2082,10 +2205,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="conv-text"><b>${phase.convergeNum}</b> ${phase.convergeLabel}</div>
       </div>`;
     bracketWrap.appendChild(wrap);
-    wrap.querySelectorAll('.group-box').forEach(box => {
-      box.querySelector('.group-box-head').addEventListener('click', () => {
-        box.classList.toggle('open');
-      });
+    wrap.querySelectorAll('.team-box').forEach(box => {
+      box.querySelector('.team-box-head').addEventListener('click', () => box.classList.toggle('open'));
     });
     roundIdx++;
   }
@@ -2122,7 +2243,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   D.phases.forEach(phase => {
-    if (phase.roster) renderGroupsRound(phase);
+    if (phase.teamsList) renderTeamsRound(phase);
   });
 
   const groupsConverge = document.createElement('div');
