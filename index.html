@@ -573,155 +573,97 @@ ul{list-style:none}
 .tree-champion span{font-family:var(--f-mono);font-size:11px;letter-spacing:.25em;text-transform:uppercase}
 
 /* ============================================================
-   LLAVE DE ELIMINACIÓN — bracket vertical profesional
-   (rondas apiladas de arriba hacia abajo)
+   LLAVE DE ELIMINACIÓN — bracket tipo "mariposa" (16 equipos)
+   Diagrama fijo que cabe en pantalla; al tocar una partida, toda
+   la escena hace zoom hacia esa tarjeta para leer el detalle.
    Color de acento: el verde principal de la marca (--primary)
    ============================================================ */
-.h-bracket-scroll{
+.bfly-viewport{
   --bracket-accent:var(--primary);
-  overflow-x:hidden;
-  padding:10px 4px 26px;
-}
-.h-bracket{
   position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:56px;
-  padding:20px 0;
-}
-.h-bracket-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.h-line{fill:none;stroke:var(--line);stroke-width:2;transition:stroke .3s ease, stroke-width .3s ease}
-.h-line.decided{stroke-width:2}
-.h-line.flow{
-  stroke:var(--bracket-accent);
-  stroke-width:3;
-  stroke-dasharray:7 6;
-  animation:hLineFlow .7s linear infinite;
-  filter:drop-shadow(0 0 5px rgba(198,255,0,.85));
-}
-@keyframes hLineFlow{to{stroke-dashoffset:-26}}
-
-.h-bracket-round{
-  display:flex;flex-direction:row;flex-wrap:nowrap;
-  gap:22px;width:100%;
-  overflow-x:auto;
-  padding:6px 0 16px;
-  scroll-snap-type:x proximity;
-  -webkit-overflow-scrolling:touch;
-  justify-content:flex-start;
-}
-.h-bracket-round.final{justify-content:center}
-/* En móvil, Cuartos y Semifinal se deslizan igual que Octavos (nunca se apilan en columna) */
-@media (min-width:640px){
-  .h-bracket-round.semis{justify-content:center}
-  .h-bracket-round.cuartos{justify-content:center}
-  .h-bracket-round.cuartos,
-  .h-bracket-round.semis,
-  .h-bracket-round.final{
-    overflow-x:visible;
-    flex-wrap:nowrap;
-  }
-  .h-bracket-round.cuartos .match-card-h,
-  .h-bracket-round.semis .match-card-h,
-  .h-bracket-round.final .match-card-h{
-    flex:0 1 260px;
-    width:auto;
-    min-width:0;
-  }
-}
-.h-round-block{width:100%}
-.h-scroll-indicator{
-  width:100%;height:3px;
-  background:var(--line);
-  margin-top:2px;
-  position:relative;
-  overflow:hidden;
-  border-radius:2px;
-}
-.h-scroll-thumb{
-  position:absolute;top:0;left:0;height:100%;
-  background:var(--bracket-accent);
-  border-radius:2px;
-  transition:left .1s linear;
-}
-.h-round-label{
   width:100%;
-  text-align:center;margin-bottom:16px;
-  font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--bracket-accent);
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--bg);
+  container-type:inline-size;
 }
+.bfly-stage{
+  position:absolute;inset:0;
+  transform-origin:0 0;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.bfly-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#bflyCards{position:absolute;inset:0}
+.bfly-line{fill:none;stroke:var(--line);stroke-width:.4;transition:stroke .3s ease}
+.bfly-line.decided{stroke:var(--bracket-accent)}
 
-.match-card-h{
-  position:relative;
-  width:260px;
-  flex-shrink:0;
-  scroll-snap-align:start;
+.bfly-card{
+  position:absolute;
   background:#0a0a0a;
   border:1px solid var(--line);
-  padding:14px 16px;
+  padding:6% 8%;
   cursor:pointer;
-  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  transition:opacity .3s ease, border-color .2s ease;
+  font-size:12px;
+  font-size:2.5cqw;
 }
-.match-card-h:hover{
-  transform:translateY(-3px);
+.bfly-card.final,
+.bfly-card.decided{border-color:var(--bracket-accent)}
+.bfly-card:hover{border-color:var(--bracket-accent)}
+.bfly-viewport.zoomed .bfly-card:not(.active){opacity:.08;pointer-events:none}
+.bfly-card.active{
+  z-index:30;overflow:visible;height:auto;min-height:100%;
   border-color:var(--bracket-accent);
-  box-shadow:0 14px 30px -14px rgba(198,255,0,.35);
+  box-shadow:0 0 0 1px var(--bracket-accent);
 }
-@media (max-width:380px){
-  .h-bracket-round.octavos .match-card-h,
-  .h-bracket-round.cuartos .match-card-h,
-  .h-bracket-round.semis .match-card-h{width:100%;max-width:280px}
-  .h-bracket-round.final .match-card-h{padding:10px 10px;transform:scale(1)}
-}
-.match-card-h.decided{
-  border-color:var(--bracket-accent);
-  box-shadow:0 0 22px -6px rgba(198,255,0,.4);
-}
-.h-bracket-round.final .match-card-h{flex-basis:300px;padding:24px 26px;transform:scale(1.08)}
-.h-bracket-round.final .match-card-h:hover{transform:scale(1.08) translateY(-3px)}
 
-.mh-team{display:flex;align-items:center;gap:10px;padding:7px 0}
-.mh-team.winner .mh-name{color:var(--bracket-accent);font-weight:700}
-.mh-team.winner .mh-logo{border-color:var(--bracket-accent)}
-.mh-team.tbd .mh-name{color:var(--gray-dim);font-style:italic}
-.mh-logo{
-  width:28px;height:28px;border-radius:50%;flex-shrink:0;
-  background:var(--panel);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  font-family:var(--f-mono);font-size:9px;color:var(--gray);
+.bfly-status-dot{
+  position:absolute;top:.5em;right:.5em;
+  width:.55em;height:.55em;border-radius:50%;
+  background:var(--gray-dim);
 }
-.mh-logo img{width:100%;height:100%;object-fit:cover}
-.mh-name{font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mh-vs{
-  text-align:center;font-family:var(--f-mono);font-size:9px;color:var(--gray-dim);
-  letter-spacing:.1em;padding:1px 0;
-}
-.mh-bye-tag{
-  font-family:var(--f-mono);font-size:9px;color:var(--gray-dim);
-  text-align:center;padding:6px 0 0;letter-spacing:.06em;text-transform:uppercase;
-}
-.mh-meta{
-  display:flex;align-items:center;justify-content:space-between;gap:8px;
-  margin-top:12px;padding-top:10px;border-top:1px solid var(--line);
-}
-.mh-when{font-family:var(--f-mono);font-size:9.5px;color:var(--gray);line-height:1.4}
-.mh-status{
-  font-family:var(--f-mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;
-  padding:3px 8px;border:1px solid var(--line);color:var(--gray-dim);white-space:nowrap;
-}
-.mh-status.live{color:#ff5050;border-color:#ff5050;display:flex;align-items:center;gap:5px}
-.mh-status.live::before{content:'';width:5px;height:5px;border-radius:50%;background:#ff5050;animation:hLivePulse 1.2s ease-in-out infinite}
-.mh-status.finished{color:var(--bracket-accent);border-color:var(--bracket-accent)}
+.bfly-status-dot.live{background:#ff5050;animation:hLivePulse 1.2s ease-in-out infinite}
+.bfly-status-dot.finished{background:var(--bracket-accent)}
 @keyframes hLivePulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-/* contenido del modal de detalle de partida */
-.match-detail-teams{display:flex;flex-direction:column;gap:2px;margin-bottom:18px}
-.match-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
-.match-detail-item{background:var(--bg);border:1px solid var(--line);padding:12px 14px}
-.match-detail-item .dl{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
-.match-detail-item .dv{font-size:14px;color:var(--text);font-weight:600}
-.match-detail-links{display:flex;gap:10px;flex-wrap:wrap}
+.bfly-team{
+  font-size:.85em;line-height:1.3;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  color:var(--gray);
+}
+.bfly-team.winner{color:var(--bracket-accent);font-weight:700}
+.bfly-team.tbd{color:var(--gray-dim);font-style:italic}
+.bfly-vs{
+  font-family:var(--f-mono);font-size:.5em;color:var(--gray-dim);
+  text-align:center;letter-spacing:.05em;
+}
+
+.bfly-extra{
+  display:none;
+  margin-top:.6em;padding-top:.6em;
+  border-top:1px solid var(--line);
+  font-size:.55em;line-height:1.6;color:var(--gray);
+}
+.bfly-card.active .bfly-extra{display:block}
+.bfly-extra .when{font-family:var(--f-mono);color:var(--gray);margin-bottom:.4em}
+.bfly-extra .row{display:flex;justify-content:space-between;gap:.6em}
+.bfly-extra .row b{color:var(--text);font-weight:600}
+.bfly-extra .links{display:flex;gap:.8em;margin-top:.5em}
+.bfly-extra .links a{color:var(--bracket-accent);text-decoration:underline}
+
+.bfly-close{
+  position:absolute;top:12px;right:12px;z-index:50;
+  width:36px;height:36px;
+  display:none;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--primary);
+  color:var(--text);
+  box-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+.bfly-viewport.zoomed .bfly-close{display:flex}
+.bfly-close svg{width:16px;height:16px}
 
 /* contenido del pop-up de reglamento */
 .reg-doc-sub{font-family:var(--f-mono);font-size:11px;color:var(--gray);letter-spacing:.05em;margin-bottom:22px}
@@ -809,8 +751,7 @@ ul{list-style:none}
 }
 
 /* ============================================================
-   MATCH TREE — diagrama de partidas y avance de equipos
-   (Ronda de 18 → Cuartos → Semifinales → Gran Final)
+   MATCH TREE — estilos heredados para el detalle de partidas
    ============================================================ */
 .match-round + .match-round{margin-top:26px;padding-top:22px;border-top:1px dashed var(--line)}
 .match-round-head{margin-bottom:12px}
@@ -1342,81 +1283,13 @@ window.SITE_DATA = {
   phases: [
     {
       icon: "users",
-      title: "Fase de Grupos",
+      title: "Todos Contra Todos",
       teams: "37 equipos",
-      detail: "148 jugadores repartidos en 37 equipos de 4. Toca cada equipo para ver su alineación completa.",
-      advance: "18 clasifican",
-      convergeNum: "18 EQUIPOS",
-      convergeLabel: "clasifican a la Fase Eliminatoria",
+      detail: "Se juega hasta que solo queden 16 equipos con vida. Toca cada equipo para ver su alineación completa.",
+      advance: "16 clasifican",
+      convergeNum: "16 EQUIPOS",
+      convergeLabel: "avanzan a Octavos de Final",
       teamsList: true // esta fase se dibuja a partir de SITE_DATA.teams (más abajo)
-    },
-    {
-      icon: "swords",
-      title: "Fase Eliminatoria",
-      teams: "18 equipos",
-      detail: "Ronda de 18 → Cuartos de Final → Semifinales. Eliminación directa.",
-      advance: "2 finalistas",
-      // "bracket" son las rondas de partidas de esta fase — esto es lo que
-      // editarás desde el CSV: equipo por equipo y el ganador de cada partida
-      // (columnas sugeridas: ronda, partida, equipo_1, equipo_2, equipo_3, ganador).
-      bracket: [
-        {
-          title: "1. Ronda de 18",
-          subtitle: "18 equipos · Eliminación directa",
-          convergeNum: "9 EQUIPOS",
-          convergeLabel: "clasifican a Cuartos de Final",
-          matches: [
-            { id: 1, teams: ["Equipo 1", "Equipo 2"], result: "" },
-            { id: 2, teams: ["Equipo 3", "Equipo 4"], result: "" },
-            { id: 3, teams: ["Equipo 5", "Equipo 6"], result: "" },
-            { id: 4, teams: ["Equipo 7", "Equipo 8"], result: "" },
-            { id: 5, teams: ["Equipo 9", "Equipo 10"], result: "" },
-            { id: 6, teams: ["Equipo 11", "Equipo 12"], result: "" },
-            { id: 7, teams: ["Equipo 13", "Equipo 14"], result: "" },
-            { id: 8, teams: ["Equipo 15", "Equipo 16"], result: "" },
-            { id: 9, teams: ["Equipo 17", "Equipo 18", "Equipo 19"], result: "", triple: true }
-          ]
-        },
-        {
-          title: "2. Cuartos de Final",
-          subtitle: "9 equipos clasificados",
-          convergeNum: "3 GANADORES",
-          convergeLabel: "avanzan a Semifinales",
-          matches: [
-            { id: 1, teams: ["Ganador 1", "Ganador 2", "Ganador 3"], result: "" },
-            { id: 2, teams: ["Ganador 4", "Ganador 5", "Ganador 6"], result: "" },
-            { id: 3, teams: ["Ganador 7", "Ganador 8", "Ganador 9"], result: "" }
-          ]
-        },
-        {
-          title: "3. Semifinales",
-          subtitle: "3 equipos clasificados",
-          convergeNum: "2 FINALISTAS",
-          convergeLabel: "avanzan a la Gran Final",
-          matches: [
-            { id: 1, teams: ["Ganador Cuartos 1", "Ganador Cuartos 2"], result: "" },
-            { id: 2, teams: ["Ganador Cuartos 3"], result: "", bye: true }
-          ]
-        }
-      ]
-    },
-    {
-      icon: "trophy",
-      title: "Gran Final",
-      teams: "2 equipos",
-      detail: "Partida única. El ganador se corona Campeón de KRONIX ESPORTS.",
-      advance: "1 campeón",
-      bracket: [
-        {
-          title: "4. Gran Final",
-          subtitle: "Partida única · Eliminación directa",
-          convergeNum: "1 CAMPEÓN",
-          convergeLabel: "se corona en KRONIX ESPORTS",
-          matches: [
-            { id: 1, teams: ["Finalista 1", "Finalista 2"], result: "" }
-          ]
-        }
-      ]
     }
   ],
   // hoja: elimination_bracket — llave de eliminación horizontal.
@@ -1424,40 +1297,46 @@ window.SITE_DATA = {
   // (pendiente/en_vivo/finalizado), ganador, resultado, mapa, kills, mvp,
   // twitch, youtube. "feedsInto" indica a qué partida avanza el ganador
   // (esto ya viene precargado; solo edita nombres y resultados en el CSV).
+  // hoja: elimination_bracket — llave de eliminación tipo "mariposa" (16 equipos).
+  // Cada partida: equipo_1, equipo_2, fecha, hora, estado (pendiente/en_vivo/
+  // finalizado), ganador, resultado, mapa, kills, mvp, twitch, youtube.
+  // "feedsInto" indica a qué partida avanza el ganador (ya viene precargado;
+  // solo edita nombres y resultados en el CSV). x/y/w/h ubican la tarjeta
+  // dentro del diagrama (en % del ancho/alto) — no hace falta tocarlos.
   eliminationBracket: [
     {
       key: "octavos", label: "Octavos de Final",
       matches: [
-        { id:"oct-1", teams:[{name:"Equipo 1"},{name:"Equipo 2"}], date:"19 Sep", time:"4:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:0 },
-        { id:"oct-2", teams:[{name:"Equipo 3"},{name:"Equipo 4"}], date:"19 Sep", time:"4:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:1 },
-        { id:"oct-3", teams:[{name:"Equipo 5"},{name:"Equipo 6"}], date:"19 Sep", time:"5:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:2 },
-        { id:"oct-4", teams:[{name:"Equipo 7"},{name:"Equipo 8"}], date:"19 Sep", time:"5:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:0 },
-        { id:"oct-5", teams:[{name:"Equipo 9"},{name:"Equipo 10"}], date:"19 Sep", time:"6:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:1 },
-        { id:"oct-6", teams:[{name:"Equipo 11"},{name:"Equipo 12"}], date:"19 Sep", time:"6:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:2 },
-        { id:"oct-7", teams:[{name:"Equipo 13"},{name:"Equipo 14"}], date:"19 Sep", time:"7:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-3", feedsSlot:0 },
-        { id:"oct-8", teams:[{name:"Equipo 15"},{name:"Equipo 16"}], date:"19 Sep", time:"7:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-3", feedsSlot:1 },
-        { id:"oct-9", teams:[{name:"Equipo 17"},{name:"Equipo 18"},{name:"Equipo 19"}], date:"19 Sep", time:"8:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-3", feedsSlot:2, triple:true }
+        { id:"oct-1", x:8.5,  y:3,    w:10, h:9, teams:[{name:"Equipo 1"}, {name:"Equipo 2"}],   date:"19 Sep", time:"4:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:0 },
+        { id:"oct-2", x:8.5,  y:30,   w:10, h:9, teams:[{name:"Equipo 3"}, {name:"Equipo 4"}],   date:"19 Sep", time:"4:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-1", feedsSlot:1 },
+        { id:"oct-3", x:8.5,  y:57,   w:10, h:9, teams:[{name:"Equipo 5"}, {name:"Equipo 6"}],   date:"19 Sep", time:"5:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:0 },
+        { id:"oct-4", x:8.5,  y:84,   w:10, h:9, teams:[{name:"Equipo 7"}, {name:"Equipo 8"}],   date:"19 Sep", time:"5:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-2", feedsSlot:1 },
+        { id:"oct-5", x:81.5, y:3,    w:10, h:9, teams:[{name:"Equipo 9"}, {name:"Equipo 10"}],  date:"19 Sep", time:"6:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-3", feedsSlot:0 },
+        { id:"oct-6", x:81.5, y:30,   w:10, h:9, teams:[{name:"Equipo 11"},{name:"Equipo 12"}],  date:"19 Sep", time:"6:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-3", feedsSlot:1 },
+        { id:"oct-7", x:81.5, y:57,   w:10, h:9, teams:[{name:"Equipo 13"},{name:"Equipo 14"}],  date:"19 Sep", time:"7:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-4", feedsSlot:0 },
+        { id:"oct-8", x:81.5, y:84,   w:10, h:9, teams:[{name:"Equipo 15"},{name:"Equipo 16"}],  date:"19 Sep", time:"7:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"qf-4", feedsSlot:1 }
       ]
     },
     {
       key: "cuartos", label: "Cuartos de Final",
       matches: [
-        { id:"qf-1", teams:[null,null,null], date:"20 Sep", time:"2:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-1", feedsSlot:0 },
-        { id:"qf-2", teams:[null,null,null], date:"20 Sep", time:"2:45 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-1", feedsSlot:1 },
-        { id:"qf-3", teams:[null,null,null], date:"20 Sep", time:"3:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-2", feedsSlot:0 }
+        { id:"qf-1", x:20, y:16.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"11:00 AM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-1", feedsSlot:0 },
+        { id:"qf-2", x:20, y:70.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"11:45 AM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-1", feedsSlot:1 },
+        { id:"qf-3", x:70, y:16.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"12:30 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-2", feedsSlot:0 },
+        { id:"qf-4", x:70, y:70.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"1:15 PM",  status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"sf-2", feedsSlot:1 }
       ]
     },
     {
-      key: "semis", label: "Semifinales",
+      key: "semis", label: "Semifinal",
       matches: [
-        { id:"sf-1", teams:[null,null], date:"20 Sep", time:"5:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"final-1", feedsSlot:0 },
-        { id:"sf-2", teams:[null], bye:true, date:"20 Sep", time:"—", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"final-1", feedsSlot:1 }
+        { id:"sf-1", x:31.5, y:43.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"4:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"final-1", feedsSlot:0 },
+        { id:"sf-2", x:58.5, y:43.5, w:10, h:9, teams:[null,null], date:"20 Sep", time:"5:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"", youtube:"", feedsInto:"final-1", feedsSlot:1 }
       ]
     },
     {
       key: "final", label: "Gran Final",
       matches: [
-        { id:"final-1", teams:[null,null], date:"20 Sep", time:"8:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"https://twitch.tv/", youtube:"https://youtube.com/", feedsInto:null }
+        { id:"final-1", x:43, y:41.5, w:14, h:13, teams:[null,null], date:"20 Sep", time:"8:00 PM", status:"pending", winnerIndex:null, result:"", map:"", kills:"", mvp:"", twitch:"https://twitch.tv/", youtube:"https://youtube.com/", feedsInto:null }
       ]
     }
   ],
@@ -1709,38 +1588,23 @@ window.SITE_DATA = {
   </div>
 </section>
 
-<!-- LLAVE DE ELIMINACIÓN — bracket horizontal profesional -->
+<!-- LLAVE DE ELIMINACIÓN — bracket tipo mariposa con zoom -->
 <section class="section" id="bracket" style="background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
-  <div class="container" style="max-width:1400px">
+  <div class="container" style="max-width:1000px">
     <div class="section-head reveal" style="text-align:center;max-width:560px;margin-left:auto;margin-right:auto">
       <div class="eyebrow" style="justify-content:center">Llave de eliminación</div>
       <h2 class="section-title">Bracket del<br>torneo</h2>
-      <p class="section-sub" style="margin-left:auto;margin-right:auto">De Octavos a la Gran Final, ronda por ronda. Toca cualquier partida para ver el detalle.</p>
+      <p class="section-sub" style="margin-left:auto;margin-right:auto">16 equipos. Octavos → Cuartos → Semifinal → Gran Final. Toca cualquier partida para ampliarla y leer el detalle.</p>
     </div>
-    <div class="h-bracket-scroll reveal">
-      <div class="h-bracket" id="hBracket">
-        <svg class="h-bracket-lines" id="hBracketLines"></svg>
+    <div class="bfly-viewport reveal" id="bflyViewport">
+      <div class="bfly-stage" id="bflyStage">
+        <svg class="bfly-lines" id="bflyLines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+        <div id="bflyCards"></div>
       </div>
+      <button class="bfly-close" id="bflyClose" aria-label="Salir del zoom"><i data-lucide="x"></i></button>
     </div>
   </div>
 </section>
-
-<!-- MODAL — detalle de partida -->
-<div class="modal-overlay" id="matchModal" aria-hidden="true">
-  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="matchModalTitle">
-    <div class="modal-header">
-      <div>
-        <div class="modal-eyebrow" id="matchModalRound">Partida</div>
-        <div class="modal-title" id="matchModalTitle">VS</div>
-        <div class="modal-count" id="matchModalWhen"></div>
-      </div>
-      <button class="modal-close" id="matchModalClose" aria-label="Cerrar">
-        <i data-lucide="x"></i>
-      </button>
-    </div>
-    <div id="matchModalBody"></div>
-  </div>
-</div>
 
 <!-- MODAL — reglamento oficial -->
 <div class="modal-overlay" id="reglamentoModal" aria-hidden="true">
@@ -2250,44 +2114,8 @@ document.addEventListener('DOMContentLoaded', () => {
   groupsConverge.className = 'round-convergence reveal';
   groupsConverge.style.maxWidth = '900px';
   groupsConverge.style.margin = '0 auto';
-  groupsConverge.innerHTML = `<i data-lucide="arrow-right"></i><div class="conv-text"><b>18 EQUIPOS</b> avanzan a la llave de eliminación — mira el bracket completo abajo</div>`;
+  groupsConverge.innerHTML = `<i data-lucide="arrow-right"></i><div class="conv-text"><b>16 EQUIPOS</b> avanzan a Octavos de Final — mira el bracket completo abajo</div>`;
   bracketWrap.appendChild(groupsConverge);
-
-  /* ---------- Modal de detalle de partida (se referencia desde el bracket) ---------- */
-  const matchModal = document.getElementById('matchModal');
-  const matchModalClose = document.getElementById('matchModalClose');
-  function openMatchModal(m, roundLabel){
-    document.getElementById('matchModalRound').textContent = roundLabel;
-    const names = (m.teams || []).map(t => t ? t.name : 'Por definir');
-    document.getElementById('matchModalTitle').textContent = names.join(' vs ');
-    document.getElementById('matchModalWhen').textContent = `${m.date}${m.time && m.time !== '—' ? ' · ' + m.time : ''}`;
-
-    const items = [
-      { l: 'Mapa', v: m.map || 'Por definir' },
-      { l: 'Resultado', v: m.result || 'Pendiente' },
-      { l: 'Kills', v: m.kills || '—' },
-      { l: 'MVP', v: m.mvp || '—' }
-    ];
-    let body = `<div class="match-detail-grid">${items.map(it => `<div class="match-detail-item"><div class="dl">${it.l}</div><div class="dv">${it.v}</div></div>`).join('')}</div>`;
-    const links = [];
-    if (m.twitch) links.push(`<a href="${m.twitch}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"><i data-lucide="twitch" style="width:14px;height:14px"></i> Ver en Twitch</a>`);
-    if (m.youtube) links.push(`<a href="${m.youtube}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"><i data-lucide="youtube" style="width:14px;height:14px"></i> Ver en YouTube</a>`);
-    if (links.length) body += `<div class="match-detail-links">${links.join('')}</div>`;
-
-    document.getElementById('matchModalBody').innerHTML = body;
-    matchModal.classList.add('open');
-    matchModal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-    if (window.lucide) lucide.createIcons();
-  }
-  function closeMatchModal(){
-    matchModal.classList.remove('open');
-    matchModal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-  matchModalClose.addEventListener('click', closeMatchModal);
-  matchModal.addEventListener('click', e => { if (e.target === matchModal) closeMatchModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMatchModal(); });
 
   /* ---------- Pop-up de reglamento ---------- */
   const reglamentoModal = document.getElementById('reglamentoModal');
@@ -2593,135 +2421,112 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }));
 
-    const hBracket = document.getElementById('hBracket');
-    const svg = document.getElementById('hBracketLines');
-    const STATUS_LABEL = { pending: 'Pendiente', live: 'En vivo', finished: 'Finalizado' };
+    const viewport = document.getElementById('bflyViewport');
+    const stage = document.getElementById('bflyStage');
+    const svg = document.getElementById('bflyLines');
+    const cardsLayer = document.getElementById('bflyCards');
+    const closeBtn = document.getElementById('bflyClose');
+    const allMatches = D.eliminationBracket.flatMap(r => r.matches);
 
-    function teamHTML(team, isWinner){
-      if (!team){
-        return `<div class="mh-team tbd"><span class="mh-logo">?</span><span class="mh-name">Por definir</span></div>`;
-      }
-      const logo = team.logo ? `<img src="${team.logo}" alt="${team.name}">` : team.name.slice(0, 2).toUpperCase();
-      return `<div class="mh-team ${isWinner ? 'winner' : ''}"><span class="mh-logo">${logo}</span><span class="mh-name">${team.name}</span></div>`;
+    function teamLine(team, isWinner){
+      if (!team) return `<div class="bfly-team tbd">Por definir</div>`;
+      return `<div class="bfly-team ${isWinner ? 'winner' : ''}">${team.name}</div>`;
     }
 
-    const roundScrollEls = [];
+    // ---------- tarjetas ----------
+    allMatches.forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'bfly-card' + (m.status === 'finished' ? ' decided' : '') + (m.feedsInto ? '' : ' final');
+      card.dataset.matchId = m.id;
+      card.style.left = m.x + '%';
+      card.style.top = m.y + '%';
+      card.style.width = m.w + '%';
+      card.style.height = m.h + '%';
 
-    D.eliminationBracket.forEach(round => {
-      const block = document.createElement('div');
-      block.className = 'h-round-block';
-      block.innerHTML = `<div class="h-round-label">${round.label}</div>`;
+      const teamsHtml = m.teams.map((t, i) => teamLine(t, m.winnerIndex === i)).join('<div class="bfly-vs">VS</div>');
 
-      const col = document.createElement('div');
-      col.className = 'h-bracket-round ' + round.key;
+      const extraRows = [
+        { l: 'Mapa', v: m.map || 'Por definir' },
+        { l: 'Resultado', v: m.result || 'Pendiente' },
+        { l: 'Kills', v: m.kills || '—' },
+        { l: 'MVP', v: m.mvp || '—' }
+      ].map(r => `<div class="row"><span>${r.l}</span><b>${r.v}</b></div>`).join('');
+      const links = [];
+      if (m.twitch) links.push(`<a href="${m.twitch}" target="_blank" rel="noopener noreferrer">Twitch</a>`);
+      if (m.youtube) links.push(`<a href="${m.youtube}" target="_blank" rel="noopener noreferrer">YouTube</a>`);
 
-      round.matches.forEach(m => {
-        const card = document.createElement('div');
-        card.className = 'match-card-h' + (m.status === 'finished' ? ' decided' : '');
-        card.dataset.matchId = m.id;
-
-        let teamsHtml = '';
-        if (m.bye){
-          teamsHtml = teamHTML(m.teams[0], m.status === 'finished') + `<div class="mh-bye-tag">BYE — pase directo</div>`;
-        } else {
-          m.teams.forEach((t, i) => {
-            teamsHtml += teamHTML(t, m.winnerIndex === i);
-            if (i < m.teams.length - 1) teamsHtml += `<div class="mh-vs">VS</div>`;
-          });
-        }
-
-        card.innerHTML = `
-          ${teamsHtml}
-          <div class="mh-meta">
-            <div class="mh-when">${m.date}${m.time && m.time !== '—' ? ' · ' + m.time : ''}</div>
-            <div class="mh-status ${m.status}">${STATUS_LABEL[m.status] || m.status}</div>
-          </div>`;
-        card.addEventListener('click', () => openMatchModal(m, round.label));
-        card.addEventListener('mouseenter', () => {
-          svg.querySelectorAll(`[data-source="${m.id}"], [data-target="${m.id}"]`).forEach(p => p.classList.add('flow'));
-        });
-        card.addEventListener('mouseleave', () => {
-          svg.querySelectorAll(`[data-source="${m.id}"], [data-target="${m.id}"]`).forEach(p => p.classList.remove('flow'));
-        });
-        col.appendChild(card);
+      card.innerHTML = `
+        <span class="bfly-status-dot ${m.status}"></span>
+        ${teamsHtml}
+        <div class="bfly-extra">
+          <div class="when">${m.date}${m.time && m.time !== '—' ? ' · ' + m.time : ''}</div>
+          ${extraRows}
+          ${links.length ? `<div class="links">${links.join('')}</div>` : ''}
+        </div>`;
+      card.addEventListener('click', e => {
+        e.stopPropagation();
+        zoomToCard(card);
       });
-
-      block.appendChild(col);
-
-      let indicatorThumb = null;
-      if (round.key !== 'final'){
-        const indicator = document.createElement('div');
-        indicator.className = 'h-scroll-indicator';
-        indicatorThumb = document.createElement('div');
-        indicatorThumb.className = 'h-scroll-thumb';
-        indicator.appendChild(indicatorThumb);
-        block.appendChild(indicator);
-      }
-
-      hBracket.appendChild(block);
-      roundScrollEls.push({ el: col, thumb: indicatorThumb });
+      cardsLayer.appendChild(card);
     });
-    hBracket.appendChild(svg); // el svg queda al final, superpuesto sobre las columnas
 
-    function drawConnectors(){
-      const rect = hBracket.getBoundingClientRect();
-      svg.setAttribute('width', hBracket.scrollWidth);
-      svg.setAttribute('height', hBracket.scrollHeight);
+    // ---------- líneas conectoras en codo (no curvas), como el diagrama de referencia ----------
+    function drawLines(){
       svg.innerHTML = '';
-      D.eliminationBracket.forEach(round => round.matches.forEach(m => {
+      allMatches.forEach(m => {
         if (!m.feedsInto) return;
-        const source = hBracket.querySelector(`[data-match-id="${m.id}"]`);
-        const target = hBracket.querySelector(`[data-match-id="${m.feedsInto}"]`);
-        if (!source || !target) return;
-        const sr = source.getBoundingClientRect();
-        const tr = target.getBoundingClientRect();
-        const x1 = sr.left + sr.width / 2 - rect.left;
-        const y1 = sr.bottom - rect.top;
-        const x2 = tr.left + tr.width / 2 - rect.left;
-        const y2 = tr.top - rect.top;
-        const midY = (y1 + y2) / 2;
+        const target = byId[m.feedsInto];
+        if (!target) return;
+        const goingRight = m.x < target.x; // partidas del lado izquierdo fluyen hacia la derecha
+        const x1 = goingRight ? m.x + m.w : m.x;
+        const y1 = m.y + m.h / 2;
+        const x2 = goingRight ? target.x : target.x + target.w;
+        const y2 = target.y + target.h / 2;
+        const midX = (x1 + x2) / 2;
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`);
-        path.setAttribute('class', 'h-line' + (m.status === 'finished' ? ' decided' : ''));
-        path.dataset.source = m.id;
-        path.dataset.target = m.feedsInto;
+        path.setAttribute('d', `M ${x1} ${y1} L ${midX} ${y1} L ${midX} ${y2} L ${x2} ${y2}`);
+        path.setAttribute('class', 'bfly-line' + (m.status === 'finished' ? ' decided' : ''));
         svg.appendChild(path);
-      }));
-    }
-
-    function updateScrollIndicators(){
-      roundScrollEls.forEach(({ el, thumb }) => {
-        if (!thumb) return;
-        const maxScroll = el.scrollWidth - el.clientWidth;
-        const widthPct = Math.min(100, (el.clientWidth / el.scrollWidth) * 100);
-        if (widthPct >= 99.5){
-          thumb.parentElement.style.display = 'none';
-          return;
-        }
-        thumb.parentElement.style.display = 'block';
-        const scrollPct = maxScroll > 0 ? el.scrollLeft / maxScroll : 0;
-        thumb.style.width = widthPct + '%';
-        thumb.style.left = (scrollPct * (100 - widthPct)) + '%';
       });
     }
+    drawLines();
 
-    setTimeout(() => { drawConnectors(); updateScrollIndicators(); }, 60);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawConnectors(); updateScrollIndicators(); });
-    window.addEventListener('load', () => { drawConnectors(); updateScrollIndicators(); });
-    let resizeTimer;
+    // ---------- zoom hacia una tarjeta (no es un modal: solo escala/traslada el diagrama) ----------
+    function zoomToCard(card){
+      stage.style.transform = '';
+      const stageRect = stage.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const viewportRect = viewport.getBoundingClientRect();
+      const localX = cardRect.left - stageRect.left + cardRect.width / 2;
+      const localY = cardRect.top - stageRect.top + cardRect.height / 2;
+      const s = 2.6;
+      const tx = viewportRect.width / 2 - localX * s;
+      const ty = viewportRect.height / 2 - localY * s;
+      document.querySelectorAll('.bfly-card.active').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      viewport.classList.add('zoomed');
+      stage.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+      if (window.lucide) lucide.createIcons();
+    }
+    function zoomOut(){
+      stage.style.transform = '';
+      viewport.classList.remove('zoomed');
+      document.querySelectorAll('.bfly-card.active').forEach(c => c.classList.remove('active'));
+    }
+    closeBtn.addEventListener('click', zoomOut);
+    viewport.addEventListener('click', e => {
+      if (e.target === viewport || e.target === stage || e.target === cardsLayer) zoomOut();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && viewport.classList.contains('zoomed')) zoomOut();
+    });
     window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { drawConnectors(); updateScrollIndicators(); }, 120);
+      if (viewport.classList.contains('zoomed')){
+        const active = viewport.querySelector('.bfly-card.active');
+        if (active) zoomToCard(active);
+      }
     });
-    // cada ronda se desliza en horizontal de forma independiente: redibuja líneas + barra de navegación al deslizar
-    let scrollTimer;
-    roundScrollEls.forEach(({ el }) => {
-      el.addEventListener('scroll', () => {
-        updateScrollIndicators();
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(drawConnectors, 30);
-      }, { passive: true });
-    });
+
     if (window.lucide) lucide.createIcons();
   })();
 
