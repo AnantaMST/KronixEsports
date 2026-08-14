@@ -574,8 +574,9 @@ ul{list-style:none}
 
 /* ============================================================
    LLAVE DE ELIMINACIÓN — bracket tipo "mariposa" (16 equipos)
-   Diagrama fijo que cabe en pantalla; al tocar una partida, toda
-   la escena hace zoom hacia esa tarjeta para leer el detalle.
+   Diagrama fijo que cabe en pantalla. Cada tarjeta chica solo
+   muestra "Battle N" + estado; al tocarla se abre una tarjeta
+   grande de proporción fija 1080x1350 con toda la información.
    Color de acento: el verde principal de la marca (--primary)
    ============================================================ */
 .bfly-viewport{
@@ -588,11 +589,7 @@ ul{list-style:none}
   background:var(--bg);
   container-type:inline-size;
 }
-.bfly-stage{
-  position:absolute;inset:0;
-  transform-origin:0 0;
-  transition:transform .5s cubic-bezier(.2,.8,.2,1);
-}
+.bfly-stage{position:absolute;inset:0}
 .bfly-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 #bflyCards{position:absolute;inset:0}
 .bfly-line{fill:none;stroke:var(--line);stroke-width:.4;transition:stroke .3s ease}
@@ -602,23 +599,17 @@ ul{list-style:none}
   position:absolute;
   background:#0a0a0a;
   border:1px solid var(--line);
-  padding:6% 8%;
+  padding:.5em .6em;
   cursor:pointer;
   overflow:hidden;
-  display:flex;flex-direction:column;justify-content:center;
-  transition:opacity .3s ease, border-color .2s ease;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3em;
+  transition:border-color .2s ease, transform .15s ease;
   font-size:12px;
-  font-size:2.5cqw;
+  font-size:2.6cqw;
 }
 .bfly-card.final,
 .bfly-card.decided{border-color:var(--bracket-accent)}
-.bfly-card:hover{border-color:var(--bracket-accent)}
-.bfly-viewport.zoomed .bfly-card:not(.active){opacity:.08;pointer-events:none}
-.bfly-card.active{
-  z-index:30;overflow:visible;height:auto;min-height:100%;
-  border-color:var(--bracket-accent);
-  box-shadow:0 0 0 1px var(--bracket-accent);
-}
+.bfly-card:hover{border-color:var(--bracket-accent);transform:scale(1.04)}
 
 .bfly-status-dot{
   position:absolute;top:.5em;right:.5em;
@@ -629,41 +620,69 @@ ul{list-style:none}
 .bfly-status-dot.finished{background:var(--bracket-accent)}
 @keyframes hLivePulse{0%,100%{opacity:1}50%{opacity:.25}}
 
-.bfly-team{
-  font-size:.85em;line-height:1.3;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  color:var(--gray);
-}
-.bfly-team.winner{color:var(--bracket-accent);font-weight:700}
-.bfly-team.tbd{color:var(--gray-dim);font-style:italic}
-.bfly-vs{
-  font-family:var(--f-mono);font-size:.5em;color:var(--gray-dim);
-  text-align:center;letter-spacing:.05em;
+.bfly-label{
+  font-family:var(--f-mono);font-weight:700;font-size:.85em;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--text);text-align:center;
 }
 
-.bfly-extra{
-  display:none;
-  margin-top:.6em;padding-top:.6em;
-  border-top:1px solid var(--line);
-  font-size:.55em;line-height:1.6;color:var(--gray);
+/* ---------- tarjeta ampliada (proporción fija 1080x1350) ---------- */
+.bfly-zoom-overlay{
+  position:fixed;inset:0;z-index:300;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+  padding:20px;
 }
-.bfly-card.active .bfly-extra{display:block}
-.bfly-extra .when{font-family:var(--f-mono);color:var(--gray);margin-bottom:.4em}
-.bfly-extra .row{display:flex;justify-content:space-between;gap:.6em}
-.bfly-extra .row b{color:var(--text);font-weight:600}
-.bfly-extra .links{display:flex;gap:.8em;margin-top:.5em}
-.bfly-extra .links a{color:var(--bracket-accent);text-decoration:underline}
-
-.bfly-close{
-  position:absolute;top:12px;right:12px;z-index:50;
-  width:36px;height:36px;
-  display:none;align-items:center;justify-content:center;
+.bfly-zoom-overlay.open{opacity:1;pointer-events:auto}
+.bfly-zoom-card{
+  width:min(1080px, 88vw);
+  aspect-ratio:1080/1350;
+  max-height:92vh;
+  background:var(--panel);
+  border:1px solid var(--primary);
+  box-shadow:0 30px 90px -20px rgba(0,0,0,.9), 0 0 60px -10px var(--primary-glow);
+  padding:5% 6%;
+  overflow-y:auto;
+  display:flex;flex-direction:column;
+  transform:scale(.85);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.bfly-zoom-overlay.open .bfly-zoom-card{transform:scale(1)}
+.bfly-zoom-close{
+  position:absolute;top:20px;right:20px;z-index:310;
+  width:40px;height:40px;
+  display:flex;align-items:center;justify-content:center;
   background:var(--panel);border:1px solid var(--primary);
   color:var(--text);
-  box-shadow:0 4px 16px rgba(0,0,0,.5);
 }
-.bfly-viewport.zoomed .bfly-close{display:flex}
-.bfly-close svg{width:16px;height:16px}
+.bfly-zoom-close svg{width:17px;height:17px}
+
+.bzc-eyebrow{font-family:var(--f-mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;color:var(--primary)}
+.bzc-matchup{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px 0}
+.bzc-team{font-family:var(--f-display);font-size:clamp(28px,6vw,46px);text-transform:uppercase;color:var(--text);line-height:1.05}
+.bzc-team.winner{color:var(--primary);text-shadow:0 0 30px var(--primary-glow)}
+.bzc-team.tbd{color:var(--gray-dim);font-style:italic;font-family:var(--f-body);font-size:20px}
+.bzc-vs{font-family:var(--f-mono);font-size:14px;color:var(--gray-dim);letter-spacing:.25em}
+.bzc-status{
+  text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--gray);
+  margin-bottom:22px;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.bzc-status .dot{width:8px;height:8px;border-radius:50%;background:var(--gray-dim);flex-shrink:0}
+.bzc-status .dot.live{background:#ff5050}
+.bzc-status .dot.finished{background:var(--primary)}
+.bzc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.bzc-item{background:var(--bg);border:1px solid var(--line);padding:14px}
+.bzc-item span{display:block;font-family:var(--f-mono);font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.bzc-item b{font-size:15px;color:var(--text)}
+.bzc-links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.bzc-footer{
+  margin-top:auto;text-align:center;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.35em;
+  color:var(--gray-dim);padding-top:18px;
+}
 
 /* contenido del pop-up de reglamento */
 .reg-doc-sub{font-family:var(--f-mono);font-size:11px;color:var(--gray);letter-spacing:.05em;margin-bottom:22px}
@@ -1601,10 +1620,15 @@ window.SITE_DATA = {
         <svg class="bfly-lines" id="bflyLines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
         <div id="bflyCards"></div>
       </div>
-      <button class="bfly-close" id="bflyClose" aria-label="Salir del zoom"><i data-lucide="x"></i></button>
     </div>
   </div>
 </section>
+
+<!-- Tarjeta ampliada de la batalla (proporción fija 1080x1350, centrada en pantalla) -->
+<div class="bfly-zoom-overlay" id="bflyZoomOverlay" aria-hidden="true">
+  <button class="bfly-zoom-close" id="bflyZoomClose" aria-label="Cerrar"><i data-lucide="x"></i></button>
+  <div class="bfly-zoom-card" id="bflyZoomCard"></div>
+</div>
 
 <!-- MODAL — reglamento oficial -->
 <div class="modal-overlay" id="reglamentoModal" aria-hidden="true">
@@ -2421,20 +2445,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }));
 
-    const viewport = document.getElementById('bflyViewport');
     const stage = document.getElementById('bflyStage');
     const svg = document.getElementById('bflyLines');
     const cardsLayer = document.getElementById('bflyCards');
-    const closeBtn = document.getElementById('bflyClose');
-    const allMatches = D.eliminationBracket.flatMap(r => r.matches);
+    const zoomOverlay = document.getElementById('bflyZoomOverlay');
+    const zoomCard = document.getElementById('bflyZoomCard');
+    const zoomClose = document.getElementById('bflyZoomClose');
+    const STATUS_LABEL = { pending: 'Pendiente', live: 'En vivo', finished: 'Finalizado' };
 
-    function teamLine(team, isWinner){
-      if (!team) return `<div class="bfly-team tbd">Por definir</div>`;
-      return `<div class="bfly-team ${isWinner ? 'winner' : ''}">${team.name}</div>`;
-    }
+    // lista plana de partidas, cada una con la etiqueta de su ronda
+    const allMatches = [];
+    D.eliminationBracket.forEach(round => round.matches.forEach(m => allMatches.push({ m, roundLabel: round.label })));
 
-    // ---------- tarjetas ----------
-    allMatches.forEach(m => {
+    // ---------- tarjetas chicas del diagrama: solo "Battle N" + estado ----------
+    allMatches.forEach(({ m }, mi) => {
       const card = document.createElement('div');
       card.className = 'bfly-card' + (m.status === 'finished' ? ' decided' : '') + (m.feedsInto ? '' : ' final');
       card.dataset.matchId = m.id;
@@ -2442,30 +2466,12 @@ document.addEventListener('DOMContentLoaded', () => {
       card.style.top = m.y + '%';
       card.style.width = m.w + '%';
       card.style.height = m.h + '%';
-
-      const teamsHtml = m.teams.map((t, i) => teamLine(t, m.winnerIndex === i)).join('<div class="bfly-vs">VS</div>');
-
-      const extraRows = [
-        { l: 'Mapa', v: m.map || 'Por definir' },
-        { l: 'Resultado', v: m.result || 'Pendiente' },
-        { l: 'Kills', v: m.kills || '—' },
-        { l: 'MVP', v: m.mvp || '—' }
-      ].map(r => `<div class="row"><span>${r.l}</span><b>${r.v}</b></div>`).join('');
-      const links = [];
-      if (m.twitch) links.push(`<a href="${m.twitch}" target="_blank" rel="noopener noreferrer">Twitch</a>`);
-      if (m.youtube) links.push(`<a href="${m.youtube}" target="_blank" rel="noopener noreferrer">YouTube</a>`);
-
       card.innerHTML = `
         <span class="bfly-status-dot ${m.status}"></span>
-        ${teamsHtml}
-        <div class="bfly-extra">
-          <div class="when">${m.date}${m.time && m.time !== '—' ? ' · ' + m.time : ''}</div>
-          ${extraRows}
-          ${links.length ? `<div class="links">${links.join('')}</div>` : ''}
-        </div>`;
+        <div class="bfly-label">Battle ${mi + 1}</div>`;
       card.addEventListener('click', e => {
         e.stopPropagation();
-        zoomToCard(card);
+        openZoomCard(m, mi + 1);
       });
       cardsLayer.appendChild(card);
     });
@@ -2473,7 +2479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- líneas conectoras en codo (no curvas), como el diagrama de referencia ----------
     function drawLines(){
       svg.innerHTML = '';
-      allMatches.forEach(m => {
+      allMatches.forEach(({ m }) => {
         if (!m.feedsInto) return;
         const target = byId[m.feedsInto];
         if (!target) return;
@@ -2491,41 +2497,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     drawLines();
 
-    // ---------- zoom hacia una tarjeta (no es un modal: solo escala/traslada el diagrama) ----------
-    function zoomToCard(card){
-      stage.style.transform = '';
-      const stageRect = stage.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      const viewportRect = viewport.getBoundingClientRect();
-      const localX = cardRect.left - stageRect.left + cardRect.width / 2;
-      const localY = cardRect.top - stageRect.top + cardRect.height / 2;
-      const s = 2.6;
-      const tx = viewportRect.width / 2 - localX * s;
-      const ty = viewportRect.height / 2 - localY * s;
-      document.querySelectorAll('.bfly-card.active').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      viewport.classList.add('zoomed');
-      stage.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+    // ---------- tarjeta ampliada (1080x1350) con toda la info de la batalla ----------
+    let openMatchId = null;
+
+    function teamHTML(team, isWinner){
+      if (!team) return `<div class="bzc-team tbd">Por definir</div>`;
+      return `<div class="bzc-team ${isWinner ? 'winner' : ''}">${team.name}</div>`;
+    }
+
+    function openZoomCard(m, battleN){
+      openMatchId = m.id;
+      const teamsHtml = m.teams.map((t, i) => teamHTML(t, m.winnerIndex === i)).join('<div class="bzc-vs">VS</div>');
+      const items = [
+        { l: 'Mapa', v: m.map || 'Por definir' },
+        { l: 'Resultado', v: m.result || 'Pendiente' },
+        { l: 'Kills', v: m.kills || '—' },
+        { l: 'MVP', v: m.mvp || '—' }
+      ];
+      const links = [];
+      if (m.twitch) links.push(`<a href="${m.twitch}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"><i data-lucide="twitch" style="width:14px;height:14px"></i> Twitch</a>`);
+      if (m.youtube) links.push(`<a href="${m.youtube}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost"><i data-lucide="youtube" style="width:14px;height:14px"></i> YouTube</a>`);
+
+      zoomCard.innerHTML = `
+        <div class="bzc-eyebrow">Battle ${battleN}</div>
+        <div class="bzc-matchup">${teamsHtml}</div>
+        <div class="bzc-status">
+          <span class="dot ${m.status}"></span>
+          ${STATUS_LABEL[m.status] || m.status} · ${m.date}${m.time && m.time !== '—' ? ' · ' + m.time : ''}
+        </div>
+        <div class="bzc-grid">
+          ${items.map(it => `<div class="bzc-item"><span>${it.l}</span><b>${it.v}</b></div>`).join('')}
+        </div>
+        ${links.length ? `<div class="bzc-links">${links.join('')}</div>` : ''}
+        <div class="bzc-footer">KRONIX ESPORTS</div>`;
+
+      zoomOverlay.classList.add('open');
+      zoomOverlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
       if (window.lucide) lucide.createIcons();
     }
-    function zoomOut(){
-      stage.style.transform = '';
-      viewport.classList.remove('zoomed');
-      document.querySelectorAll('.bfly-card.active').forEach(c => c.classList.remove('active'));
+    function closeZoomCard(){
+      openMatchId = null;
+      zoomOverlay.classList.remove('open');
+      zoomOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
     }
-    closeBtn.addEventListener('click', zoomOut);
-    viewport.addEventListener('click', e => {
-      if (e.target === viewport || e.target === stage || e.target === cardsLayer) zoomOut();
-    });
+
+    zoomClose.addEventListener('click', closeZoomCard);
+    zoomOverlay.addEventListener('click', e => { if (e.target === zoomOverlay) closeZoomCard(); });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && viewport.classList.contains('zoomed')) zoomOut();
+      if (e.key === 'Escape' && zoomOverlay.classList.contains('open')) closeZoomCard();
     });
-    window.addEventListener('resize', () => {
-      if (viewport.classList.contains('zoomed')){
-        const active = viewport.querySelector('.bfly-card.active');
-        if (active) zoomToCard(active);
-      }
-    });
+
+    // tocar de nuevo la misma tarjeta (mientras está ampliada) la cierra
+    cardsLayer.addEventListener('click', e => {
+      const card = e.target.closest('.bfly-card');
+      if (card && card.dataset.matchId === openMatchId) closeZoomCard();
+    }, true);
 
     if (window.lucide) lucide.createIcons();
   })();
